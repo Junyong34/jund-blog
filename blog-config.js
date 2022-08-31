@@ -11,7 +11,7 @@ module.exports = {
     email: "mailto:wnsdyd21@gmail.com",
   },
   utterances: {
-    repo: "Junyong34/junD-blog",
+    repo: "Junyong34/jund-blog",
     type: "pathname",
   },
 }
