@@ -174,6 +174,8 @@ react-query, redux, GlobalStyle, theme, 등등 다양한 처리를 넣을 수 �
 예를 들어서 스토리북에서 react-query 사용하기 위해 queryClient를 추가할 수 있습니다.
 
 1. 최초 제일 먼저 실행되는 tsx 파일 생성합니다. (StorybookApp.tsx) 
+
+
 ```javascript
 export const StorybookApp = (
     StoryComp: Story
@@ -189,8 +191,11 @@ export const StorybookApp = (
     </div>
   )
 }
+
 ```
+
 생성한 파일을 preview decorators에 추가 합니다.
+
 
 ```javascript
 import { StorybookApp } from './StorybookApp'
