@@ -9,7 +9,7 @@ tags:
   - vite
   - react
   - vite-react
-series: "Storybook - 1"
+series: "React로 Storybook 구성하기"
 ---
 
 ## Storybook 이란
