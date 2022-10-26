@@ -30,6 +30,10 @@ series: "Storybook - 1"
 답변이 오는것도 큰 장점인것 같습니다. 크로메틱 관련하여는 다른 포스트에 더 정리해서 공유 하겠습니다.
 
 
+- 프로젝트에서 사용하는 컴포넌트 관리
+- 사내 개발자,디자이너,기획자 협업 소통창구 및 컴포넌트 문서화
+- 컴포넌트 or 화면 or 등등 각각 개별적으로 실행할 수 있으며, 시각적 & 인터렉션 테스트를 실행할 수 있다.
+
 ## 스토리북 설치하기
 
 환경 구성은 `React-vite`, `storybook-vite` 사용 했습니다.
@@ -43,7 +47,7 @@ npm create vite@latest
 ```
 해당 명령어를 입력하면, `Project Name` , `framework`, `variant`, 선택을 하면 설치가 끝난다.
 
-![img.png](../Storybook/img.png)
+![img.png](img.png)
 
 ```npm
 npm run dev  
