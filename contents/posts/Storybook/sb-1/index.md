@@ -65,11 +65,11 @@ npm run storybook
 ```
 명령어로 스토리북 서버를 띄워보자
 
-![img_1.png](img_1.png)
+![storybook main](img_1.png)
 위 이미지처럼 스토리북 로컬 사이트가 나오면 정상적으로 설치가 되었습니다.👏
 
 ## 스토리북 폴더 구조
-![img_3.png](img_3.png)
+![폴더 구조](img_3.png)
 
 스토리북을 설치가 끝나면 root 경로에 `.storybook` 폴더가 존재 하는데, 스토리북 환경 설정,
 최소 실행되는 app에 대한 정보들이 있다.
@@ -96,7 +96,7 @@ stories를 읽어오는 경로가 있다. 해당 설정을 통해서 `*.stories.
 > react components가 구성된 오픈소스 스토리북 사이트가 있는 링크(https://storybook.js.org/showcase/tag/react)
 > 다른사람들은 어떻게 구성 하고 있는지 참고할 수 있다.
 ### shopify 오픈소스를 기준으로 설명 합니다.
-![img_2.png](img_2.png)
+![shopify 스토리북](img_2.png)
 
 1. 스토리북 Logo, 단축키, find 기능이 있는 영역이다.
 2. 프로젝트에서 구성하고 있는 스토리(컴포넌트,페이지,컴포지션 등등..)있는 tree Menu 이다.

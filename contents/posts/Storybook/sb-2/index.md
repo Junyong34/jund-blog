@@ -14,7 +14,7 @@ series: "React로 Storybook 구성하기"
 ---
 
 ## Storybook 설정 및 옵션
-![img.png](img.png)
+![스토리북 설정 폴더](img.png)
 
 스토리북을 설치하면 .storybook 디렉토리가 생성되며, 해당 디렉토리에서 스토리북 관련 환경을 설정합니다.
 확장자가 cjs로 되어있는데 
@@ -209,7 +209,7 @@ export const decorators = [StorybookApp]
 ```
 
 Storybook server를 기동하여 react-query가 잘 작동하는지 확인을 합니다.
-![img_1.png](img_1.png)
+![리액트 쿼리 연동](img_1.png)
 
 
 ### parameters
@@ -263,7 +263,7 @@ export const parameters = {
 }
 ```
 `defaultViewport`, `customViewports` 값을 parameters에 viewport를 추가하여 컴포넌트를 화면 사이즈 별로 확인도 가능한다.
-![img_2.png](img_2.png)
+![viewport 변경](img_2.png)
 
 ### 스토리북 커스텀 설정
 manager.js 파일 만들고 Logo랑 canvas영역을 제어하는 toolbar 및 기능을 제어 하는 코드를 작성 합니다
@@ -310,7 +310,7 @@ addons.setConfig({
 
 좌측 상단에 로고가 Nike 이미지로 변경 되었습니다. 이제 내가 원하는 스토리북을 커스텀해 봅시다. 
 자세한 옵션은 [링크](https://storybook.js.org/docs/react/configure/theming#create-a-theme-quickstart)에 있습니다.
-![img_3.png](img_3.png)
+![커스텀 Storybook](img_3.png)
 
 ### 참조
 - https://storybook.js.org/docs/react/get-started/introduction
