@@ -12,8 +12,8 @@ tags:
   - vite-react
 series: "React로 Storybook 구성하기"
 ---
-
-스토리북에 좌측 리스트에 컴포넌트를 추가 하려면 스토리구성요소 파일을 생성 해야합니다.
+## 스토리북 메뉴추가 하기
+스토리북에 화면 좌측 리스트에 컴포넌트를 추가 하려면 스토리구성요소 파일을 생성 해야합니다.
 
 > `Button.stories.js | ts | jsx | tsx | mdx`
 >
@@ -75,7 +75,7 @@ export const Button = ({
   );
 };
 ```
-
+### stories.* 파일 생성 및 관리
 버튼 컴포넌트를 Button.stories.tsx파일에 추가 합니다.
 
 ```jsx
@@ -184,7 +184,8 @@ Small.args = {
 
 args 값을 지정하여 props 값을 내려주게 되고 args값이 컴포넌트에 적용이 됩니다.
 
-또 스토리북 하단에 Controls Tab에서 컨버스에 렌더링된 스토리(컴포넌트)를 args값을 변경 하면서 확인이 가능 합니다.
+### storybook Controls tab
+스토리북 하단에 Controls Tab에서 컨버스에 렌더링된 스토리(컴포넌트)를 args값을 변경 하면서 확인이 가능 합니다.
 
 ![ControlsTab](img_2.png)
 
