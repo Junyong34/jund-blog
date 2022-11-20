@@ -15,19 +15,21 @@ series: "[ESLint] import/order"
 
 
 
-# 시간이 지날수록 엉망이 되는 import 순서
+## 시간이 지날수록 엉망이 되는 import 순서
 react로 개발을 진행 하다보면 많은 Component, api, 라이브러리, copositions, react-query, 상태관리, router 등등 엄청나게 많은 파일을 import를 해서 조합 하거나 추가를 해서 개발을 진행하게 됩니다..
 
 처음에는 import코드를 나름 규칙을 잡고 개발을 하게 되자만,  협합하는 사람들이 증가하거나,  서로 다른 IDE tool를 통해서 개발하다 보면 뒤죽박죽 import 순서가 추가되어 사용되어 지게 된다. 나는 나름 규칙을 잡고 import를 추가 했지만 다른사람 소스코드를 수정할 때 내가 생각하는 import 순서가 달라 디버깅하는데 뭔가 불편함을 느끼게 되었습니다. 그러다 eslint에서 import/order rules를 추가 하는 플러그인을 보고나서 적용하기로 했습니다.
 
-# ESLint Plugin 설치
+## ESLint Plugin 설치
 >해당 글은 vite 환경을 기준으로 설명합니다  (webpack도 비슷합니다..)
 
 ESLint plugin 설치
 
 #### 기본 설치
 >  pnpm add -D eslint-plugin-import
+> 
 >  yarn add -D eslint-plugin-import
+> 
 >  npm i -D eslint-plugin-import
 
 `eslint-plugin-import` 를 통해  import/export 구문을 설정을 합니다.
@@ -36,13 +38,17 @@ ESLint plugin 설치
 tsconfig에서 paths 설정을 했다면 아래 플러그인도 설치 해야합니다.
 
 >  pnpm add -D eslint-import-resolver-typescript
+> 
 >  yarn add -D eslint-import-resolver-typescript
+> 
 >  npm i -D eslint-import-resolver-typescript
 
 #### Webpack 환경
 `webpack` 환경에서 resolver 셋팅 합니다.
 >  pnpm add -D eslint-import-resolver-webpack
+> 
 >  yarn add -D eslint-import-resolver-webpack
+> 
 >  npm i -D eslint-import-resolver-webpack
 
 
@@ -52,7 +58,7 @@ tsconfig에서 paths 설정을 했다면 아래 플러그인도 설치 해야합
 >  yarn add -D eslint-import-resolver-vite
 >  npm i -D eslint-import-resolver-vite
 
-# vite.config.ts 셋팅
+## vite.config.ts 셋팅
 
 ```javascript
 import { ConfigEnv, defineConfig, loadEnv } from 'vite'  
@@ -74,7 +80,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
 vite에서 typescript를 사용했다면 기본으로 `vite-tsconfig-paths` 가 셋팅 되어 있으며, 위에서 설치한
 `vite-plugin-eslint` 셋팅 합니다.
 
-# .eslintrc.json 셋팅
+## .eslintrc.json 셋팅
 ***완성본***
 ```json
 {  
@@ -256,7 +262,7 @@ vite에서 typescript를 사용했다면 기본으로 `vite-tsconfig-paths` 가 
     - `order` 는 오름차순(ASC), 내림차순(DESC), ignore  3가지 설정 가능 합니다.
     - `caseInsensitive` true 값은 대문자 우선 정렬, false 값은 소문자 우선 정렬
 
-# import/order 결과물
+## import/order 결과물
 
 before
 ```javascript
