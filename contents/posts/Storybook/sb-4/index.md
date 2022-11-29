@@ -81,7 +81,7 @@ Case 3
 
 ### interaction Test Code
 ![스토리 코드](img_1.png)
-제일 마지막 라인에 play 함수를 만들어서 interaction 테스트 코드를 작성을 하면 된다.
+제일 마지막 라인에 play 함수를 만들어서 interaction 테스트 코드를 작성을 하면 됩니다.
 저는 play 함수를 따로 파일로 빼서 작성을 하겠습니다.
 
 ![interaction File](img_2.png)
@@ -340,7 +340,17 @@ return story;
 이제 스토리북에서 실행되는 interaction play를 보게되면 아래와 같습니다.
 ![img_5.png](interaction_st.gif)
 
+### test watch 실행
+![package.json](img_4.png)
 
+script에 test-torybook 명령어를 통해서 테스트를 실행 할 수 있습니다.
+기본으로는 스토리 args 값에 대한 테스트가 돌아가고 interaction 테스트에 expect가 깨지면 에러를 발생 시킵니다.
+>  yarn test-storybook --watchAll
+
+명령어를 실행하여 파일을 저장할때 테스트를 수행 합니다.
+
+아까 작성한 interaction 테스트를 꺠지게 만들고 실행하게 되면 아래와 같은 메시지가 출력이 됩니다.
+![error log](img_5.png)
 
 ### 참조
 - https://storybook.js.org/docs/react/writing-tests/introduction
