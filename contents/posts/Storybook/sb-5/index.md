@@ -70,13 +70,11 @@ chromatic 제일 자주쓰는 변경점을 시각화를 해서 보여주는 기�
 ```javascript
 const Box_2 = (props: PropsWithChildren) => {
    return (
-           <Box
-                   p={1}
-                   sx={{
-                      border: '1px solid blue',
-                      borderRadius: '4px',
-                   }}
-           >
+           <Box p={1}
+                sx={{
+                   border: '1px solid blue',
+                   borderRadius: '4px',
+                  }}>
               {props.children}
            </Box>
    );
@@ -97,7 +95,7 @@ const Box_2 = (props: PropsWithChildren) => {
 
 ![build4](img_8.png)
 build4로 변경이 완료 되었고, 컴포넌트 변경사항이 없는 경우 초록불이지만, 변경이 있어 노란색으로 표시가 되었습니다.
-build4에 내역을 보게되면 
+build4에 내역을 보게 되면 
 
 ![change build4](img_9.png)
 총 3개의 스토리가 변경된걸 확인 할 수 있습니다. (LineChart는 랜덤데이터를 넣어놔서 매번 빌드시 데이터가 다르기 떄문에 표시가 되었습니다.😂)
@@ -115,7 +113,7 @@ PassWordChange를 클릭 하게 되면 아래와 같은 이미지가 나타납�
 ![PassWordChange focus](img_12.png)
 또 우측 상단에 focus 벼튼을 클릭 하면 변경된 부분만 포스커 되어 보여지게 됩니다.
 
-지금은 에시로 2개 스토리에 영향이 미쳤지만, 만약에 디자인 시스템을 구축하고
+지금은 예시로 2개 스토리에 영향이 미쳤지만, 만약에 디자인 시스템을 구축하고
 스토리가 100개 이상 늘어나게 됬을 때 더 큰효과가 발생하게 됩니다. 하나의 공통 컴포넌트의 변경으로
 어떤 스토리가 영향을 미치는지 확인이 가능하며, 또 comment를 남겨서 기획자나 디자이너에게 확인을
 해달라는 요청도 보낼 수 있습니다.
