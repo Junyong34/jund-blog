@@ -33,8 +33,9 @@ series: "React로 Storybook 구성하기"
 ![Create project](img_1.png)
 2. Project를 생성 합니다.
 ![명령어](img_3.png)
-3. `npm` or `yarn` 명령어를 통해 chromatic 설치 합니다.
-> npx chromatic --project-token=000*****
+3. `npm`, `yarn`, `npx`, `pnpm dlx` 명령어를 통해 chromatic 설치 합니다.
+> npx chromatic --project-token=<project-token>
+> yarn chromatic --project-token=<project-token>
  
 `project-token` 토큰 값은 외부에 노출 하지 않도록 주의 합시다.
 
@@ -124,7 +125,105 @@ PassWordChange를 클릭 하게 되면 아래와 같은 이미지가 나타납�
 
 ### gitAction chromatic 연동 하기 (CI/CD)
 
+Storybook 테스트, Chromatic 시각화 테스트 및 빌드 배포를 GitHub Action에서 제공하는 CI/CD
+Workflow 파일에 작성하여 자동화 작업을 진행해보겠습니다.
+
+프로젝트 폴더에서 .github/workflows 에서 yml 파일을 생성한다.
+총 2개 workflow를 생성 하겠습니다.
+1. storybook_chromatic.yml ( 크로메틱 빌드 및 배포 )
+
+### storybook_chromatic.yml
+```yaml
+name: chromatic
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       sha:
+#         description: 'The SHA-1 hash referring to the commit to check.'
+#         required: true
+#       ref:
+#         description: 'The head branch associated with the pull request.'
+#         default: 'develop'
+#         required: true
+#on:
+#  pull_request_target:
+#    types: [labeled]
+#on:
+#  push:
+#    branches:
+#      - develop
+on: [pull_request]
+
+jobs:
+  chromatic-deployment:
+    name: Deploy Storybook to chromatic
+    runs-on: [ ubuntu-latest ]
+    #    runs-on: [self-hosted, Linux, X64 ,label-1]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: | 
+           ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_TOKEN }}
+          token: ${{ secrets.GIT_REPO_TOKEN }}
+          #           token: ${{ github.event.pull_request.head.sha }}
+          exitOnceUploaded: true
+          #          autoAcceptChanges: develop
+          #           exitOnceUploaded: true
+          #           onlyChanged: true
+          #           traceChanged: true
+          buildScriptName: build-storybook
+    #    if: contains(github.event.pull_request.labels.*.name, 'storybook')
+
+```
+> github Action에 cromaui에 대한 다양한 옵션는 해당 [링크](https://www.chromatic.com/docs/github-actions)를 참조해주세요 
+
+- `on` [pull_request] PR을 생성에 시작 되도록 설정 하였습니다.
+- `jobs` 실행되는 환경은 무료로 사용할 수 있는 ubuntu-latest 지정 했습니다.
+- `steps` 1번째 checkout repository를 통해 소스를 가져 옵니다.
+- `steps` 2번째 yarn cache를 통해 모듈을 다운로드 하기전에 캐싱된 모듈이 있는지 확인합니다.
+- `steps` lock파일을 기준으로 변경 사항이 있다면 yarn install 명령어를 실행합니다.
+- `steps` chromaui를 통해서 chromatic 빌드 및 배포를 진행 합니다.
+  - projectToken / token(git) 는 github Secrets에 따로 저장해서 사용합니다.
+
+셋팅이 끝나면 new branch 생성하여 컴포넌트를 수정하고 pull request open 합니다.
+
+![pr](img_13.png)
+storybook_chromatic.yml이 시작 되면서 UI Test(interaction, 시각화 테스트)가 진행되고 storybook이
+chromatic에 publish가 진행 됩니다.
+UI Test에 Details를 클릭해보면 chromatic과 연동되어 변경된 스토리 리스트가 출력 됩니다.
+
+변경사항을 하나하나 확인하고 Accept 처리 하게 되면 
+![pr2](img_14.png)
+Merge pull request 버튼이 활성화 됩니다.
+
+
 ### chromatic 알람 Slack 채널 webhooks을 통해 전달 받기(번외)
+
+![slack add](img_15.png)
+1. add webhooks 버튼을 클릭한다.
+![salck hooks url](img_16.png)
+2. 슬랙 채널에서 hooks url 정보를 입력합니다.
+![hooks message](img_17.png)
+3. github Action 실행 되면 slack 채널로 결과가 push 되는걸 확인 할 수 있다.
+
 
 
 ### 참조
@@ -132,3 +231,4 @@ PassWordChange를 클릭 하게 되면 아래와 같은 이미지가 나타납�
 - https://github.com/chromaui/chromatic-cli
 - https://github.com/marketplace/actions/publish-to-chromatic
 - https://www.chromatic.com/docs/test
+- https://www.chromatic.com/docs/github-actions
