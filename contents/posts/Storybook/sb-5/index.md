@@ -35,6 +35,7 @@ series: "React로 Storybook 구성하기"
 ![명령어](img_3.png)
 3. `npm`, `yarn`, `npx`, `pnpm dlx` 명령어를 통해 chromatic 설치 합니다.
 > npx chromatic --project-token=<project-token>
+> 
 > yarn chromatic --project-token=<project-token>
  
 `project-token` 토큰 값은 외부에 노출 하지 않도록 주의 합시다.
@@ -107,15 +108,14 @@ PassWordChange를 클릭 하게 되면 아래와 같은 이미지가 나타납�
 
 변경사항이 의도에 맞는다면 우측 상당에 Accept를 눌러 확인 처리를 진행하면 됩니다.
 
-만약 변경점이 잘 안보이면 우측 상단에 diff 클릭하게 되면
 ![PassWordChange Diff](img_11.png)
-스타일이 변경된 지점에 초록색 mark가 표시가 됩니다 .
+만약 변경점이 잘 안보이면 우측 상단에 diff 클릭 하면 스타일이 변경된 지점에 초록색 mark가 표시가 됩니다 .
 
 ![PassWordChange focus](img_12.png)
 또 우측 상단에 focus 벼튼을 클릭 하면 변경된 부분만 포스커 되어 보여지게 됩니다.
 
 지금은 예시로 2개 스토리에 영향이 미쳤지만, 만약에 디자인 시스템을 구축하고
-스토리가 100개 이상 늘어나게 됬을 때 더 큰효과가 발생하게 됩니다. 하나의 공통 컴포넌트의 변경으로
+스토리가 100개 이상 늘어나게 됐을 때 더 큰효과가 발생하게 됩니다. 하나의 공통 컴포넌트의 변경으로
 어떤 스토리가 영향을 미치는지 확인이 가능하며, 또 comment를 남겨서 기획자나 디자이너에게 확인을
 해달라는 요청도 보낼 수 있습니다.
 
@@ -128,9 +128,9 @@ PassWordChange를 클릭 하게 되면 아래와 같은 이미지가 나타납�
 Storybook 테스트, Chromatic 시각화 테스트 및 빌드 배포를 GitHub Action에서 제공하는 CI/CD
 Workflow 파일에 작성하여 자동화 작업을 진행해보겠습니다.
 
-프로젝트 폴더에서 .github/workflows 에서 yml 파일을 생성한다.
-총 2개 workflow를 생성 하겠습니다.
-1. storybook_chromatic.yml ( 크로메틱 빌드 및 배포 )
+프로젝트 폴더에서 .github/workflows 에서 yml 파일을 생성하여
+ workflow를 작성하겠습니다.
+- storybook_chromatic.yml ( 크로메틱 빌드 및 배포 )
 
 ### storybook_chromatic.yml
 ```yaml
@@ -199,8 +199,8 @@ jobs:
 - `jobs` 실행되는 환경은 무료로 사용할 수 있는 ubuntu-latest 지정 했습니다.
 - `steps` 1번째 checkout repository를 통해 소스를 가져 옵니다.
 - `steps` 2번째 yarn cache를 통해 모듈을 다운로드 하기전에 캐싱된 모듈이 있는지 확인합니다.
-- `steps` lock파일을 기준으로 변경 사항이 있다면 yarn install 명령어를 실행합니다.
-- `steps` chromaui를 통해서 chromatic 빌드 및 배포를 진행 합니다.
+- `steps` 3번째 lock파일을 기준으로 변경 사항이 있다면 yarn install 명령어를 실행합니다.
+- `steps` 4번째 chromaui를 통해서 chromatic 빌드 및 배포를 진행 합니다.
   - projectToken / token(git) 는 github Secrets에 따로 저장해서 사용합니다.
 
 셋팅이 끝나면 new branch 생성하여 컴포넌트를 수정하고 pull request open 합니다.
@@ -215,10 +215,10 @@ UI Test에 Details를 클릭해보면 chromatic과 연동되어 변경된 스토
 Merge pull request 버튼이 활성화 됩니다.
 
 
-### chromatic 알람 Slack 채널 webhooks을 통해 전달 받기(번외)
+### chromatic 알람 Slack 채널 WebHooks을 통해 전달 받기
 
 ![slack add](img_15.png)
-1. add webhooks 버튼을 클릭한다.
+1. add WebHooks 버튼을 클릭한다.
 ![salck hooks url](img_16.png)
 2. 슬랙 채널에서 hooks url 정보를 입력합니다.
 ![hooks message](img_17.png)
