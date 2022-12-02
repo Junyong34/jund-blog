@@ -1,8 +1,8 @@
 ---
 title: "gitHub Action self host runner"
 description: "GitHub 자체 호스팅 러너 및 Azure Virtual Machines를 사용하기"
-date: 2022-10-15
-update: 2022-10-15
+date: 2022-12-02
+update: 2022-12-02
 tags:
   - git
   - github
