@@ -7,7 +7,7 @@ tags:
   - typescript
   - infer
   - ts
-series: "typescript Cook Book
+series: "typescript Cook Book"
 ---
 
 ## TypeScript Infer
@@ -25,7 +25,7 @@ type Parameters<T extends (...args: any) => any> = T extends
 `infer`는 조건부 타입에서 true로 평가 될때 사용이 되며, 타입을 새로 저장하여 타입을 추출 합니다.
 
 즉 'infer' 키워드는 조건부 타입에서 사용가능 합니다.
-```typescript
+```
 T extends infer U ? U : Y
 ```
 extends `조건부타입`에서 infer를 사용합니다.
