@@ -22,6 +22,9 @@ type Parameters<T extends (...args: any) => any> = T extends
 
 어떤식으로 작동을 하는지 궁금했습니다.
 
+`infer` 키워드는 TypeScript 의 타입 추론(type inference) 기능에 사용됩니다.
+이 기능은 타입 추론 연산자를 사용해서 타입을 추론하는 것을 돕기 위해 사용되며,
+
 `infer`는 조건부 타입에서 true로 평가 될때 사용이 되며, 타입을 새로 저장하여 타입을 추출 합니다.
 
 즉 'infer' 키워드는 조건부 타입(extends) `조건부타입`에서 infer를 사용합니다.
@@ -29,7 +32,21 @@ type Parameters<T extends (...args: any) => any> = T extends
 T extends infer U ? U : Y
 ```
 
+또 'infer'는 전달된 인자의 타입을 추론하기 위한 제네릭 타입입니다.
 
+```typescript
+function getType<T>(x: T): infer U {
+  return x;
+}
+
+const result = getType("hello");
+// result의 타입은 string입니다.
+```
+infer 키워드를 사용하면 제네릭 함수의 인자의 타입을 추론할 수 있습니다. 위 예제에서 getType 함수는 T라는 제네릭 타입을 인자로 전달받고
+infer U를 사용해 T의 타입을 추론한 결과를 반환합니다. 결과적으로 result의 타입은 string입니다.
+
+즉
+infer 키워드는 제네릭 타입 추론에서 유용한 기능을 제공합니다. 제네릭 타입을 정의할 때 infer 키워드를 사용하면, 제네릭 타입을 직접 지정하지 않고도 제네릭 함수의 인자의 타입을 추론할 수 있습니다.
 
 ## infer 알고 쓰자
 
@@ -63,6 +80,27 @@ const a4: Sample2<number[]> = 1;
 
 `Sample2<number[]>` T가 number[] 이고, infer R은 number가 추론 되며, 즉 number[]가 되어 true
 조건이 성립되어 infer에서 추론한 R타입인 number가 반환 됩니다.
+
+**간단한 예제3**
+```typescript
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+function getPropertyValue<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key] as infer U;
+}
+
+const person = { name: 'John', age: 30 };
+
+const name1 = getProperty(person, 'name');  // string | number
+const name2 = getPropertyValue(person, 'name');  // string
+
+```
+
+getPropertyValue함수에서 반환 유형의 구문을 사용 하면 함수 infer U에서 반환하는 값의
+유형을 추출할 수 있습니다.
+이를 통해 key매개변수 유형을 사용하는 것보다 함수에 대해 더 정확한 반환 유형을 지정할 수 있습니다.
 
 ## infer 에러 발생 case
 
