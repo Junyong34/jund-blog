@@ -72,7 +72,8 @@ export const StorybookApp2 = (StoryComp: Story, { parameters: { paramLink } }: S
 ```
 위 코드를 보면 Props로 stories에서 설정하는 parameters 값을 전달 받습니다.
 > [MemoryRouter](https://reactrouter.com/en/main/router-components/memory-router) 관련 내용입니다.
-> 
+
+
 라우터에서 셋팅한 값을 `paramLink`통해서 전달 받고, MemoryRouter에 Route 셋팅을 합니다.
 라우터 파라미터를 사용하는 stories 에서는 props를 받아서 `initialEntries`, `path`를 셋팅하고,
 `paramLink`가 없는 경우는 셋팅하지 않게 됩니다.
