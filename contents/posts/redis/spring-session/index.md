@@ -1,9 +1,10 @@
 ---
-title: "redis를 사용하여 session 관리하기(Spring 환경)"
+title: "Multi redis를 사용하여 session 관리하기(Spring 환경)"
 description: "session clustering"
 date: 2022-12-30
 update: 2022-12-30
 tags:
+  - Multi redis
   - oci
   - azure
   - redis
@@ -70,14 +71,138 @@ spring pom.xml에 `spring-session-data-redis` 추가 하였다.
 </dependency>
 ```
 
-Redis를 설정한 config를 추가한다
+**첫번째 Redis Config**
+```javascript
+@Configuration
+public class RedisCacheConfig{
+
+    @Value("${app.cache.redis.host}")
+    private String redisHost;
+
+    @Value("${app.cache.redis.port}")
+    private int redisPort;
+
+    @Value("${app.cache.redis.password}")
+    private String redisPassword;
+
+
+    // 세션
+    @Conditional(RedisCacheInitCondition.class)
+    public RedisConnectionFactory redisConnectionFactory(int Index) {
+        DefaultLettucePool lettucePool = new DefaultLettucePool(redisHost,redisPort);
+        lettucePool.setPassword(redisPassword);
+        lettucePool.setTimeout(1000L);
+
+        ClientOptions  clientOptions  = new ClientOptions.Builder()
+                .autoReconnect(true)
+                .suspendReconnectOnProtocolFailure(true)
+                .cancelCommandsOnReconnectFailure(true)
+                .build();
+        lettucePool.afterPropertiesSet();
+        lettucePool.getClient().setOptions(clientOptions);
+
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(lettucePool);
+        lettuceConnectionFactory.setDatabase(Index);
+        lettuceConnectionFactory.setShareNativeConnection(true);
+        return lettuceConnectionFactory;
+    }
+```
+
+**두번째 Redis Config**
 
 ```javascript
 @Configuration
+public class RedisSessionConfig{
+
+    @Value("${app.session.redis.host}")
+    private String redisHost;
+
+    @Value("${app.session.redis.port}")
+    private int redisPort;
+
+    @Value("${app.session.redis.password}")
+    private String redisPassword;
+
+
+    @Bean
+    public ConfigureRedisAction configureRedisAction() {
+        return ConfigureRedisAction.NO_OP;
+    }
+
+    // 세션
+    @Conditional(RedisCacheInitCondition.class)
+    public RedisConnectionFactory redisConnectionFactory(int Index) {
+        DefaultLettucePool lettucePool = new DefaultLettucePool(redisHost,redisPort);
+        lettucePool.setPassword(redisPassword);
+        lettucePool.setTimeout(1000L);
+
+        ClientOptions  clientOptions  = new ClientOptions.Builder()
+                .autoReconnect(true)
+                .suspendReconnectOnProtocolFailure(true)
+                .cancelCommandsOnReconnectFailure(true)
+                .build();
+        lettucePool.afterPropertiesSet();
+        lettucePool.getClient().setOptions(clientOptions);
+
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(lettucePool);
+        lettuceConnectionFactory.setUseSsl(false);
+        lettuceConnectionFactory.setDatabase(Index);
+        lettuceConnectionFactory.setShareNativeConnection(true);
+        lettuceConnectionFactory.afterPropertiesSet();
+        return lettuceConnectionFactory;
+    }
+```
+
+ConfigureRedisAction `@bean`을 추가한 이유는 redis에 세션이 저장이 되면
+만료된 세션은 expire가 진행되어야 하는데, expire 기본값으로 자동 설정이 되어있지만 Azure redis 환경인 경우 동작하지 않는다고 한다. 그래서
+`NO_OP`을 지정 하였다.
+
+
+**`@EnableRedisHttpSession` 설정**
+```javascript
+@Configuration
 @EnableRedisHttpSession
-public class HttpSessionConfig {
+public class RedisSessionDB  extends RedisSessionConfig{
+
+    @Bean
+    @Primary
+    public RedisConnectionFactory defaultRedisConnectionFactory() {
+        return redisConnectionFactory(1);  // Redis DB 선택
+    }
+
+    @Bean(name="RedisSessionStringRedisTemplate")
+    public StringRedisTemplate stringRedisTemplate() {
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+
+        stringRedisTemplate.setConnectionFactory(defaultRedisConnectionFactory());
+        return stringRedisTemplate;
+    }
 }
 ```
+
+`@Bean(name=값)`을 지정하여 다른곳에서도 해당 redis를 사용할 수 있도록 셋팅 하였다.
+
+```javascript
+@Autowired
+private final StringRedisTemplate RedisSessionStringRedisTemplate;
+```
+
+
+WAS web.xml 설정
+SessionFilter 셋팅을 하여 설정 한다.
+```xml
+    <!-- redis session -->
+    <filter>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+```
+
 
 > `@EnableRedisHttpSession`을 어노테이션을 사용해서 설정한 HTTP 세션의 유효 시간은 세션이 최종 접근된 시간으로부터 시작해서 지정한 시간 동안 유지됩니다.
 
@@ -152,14 +277,9 @@ SameSite, Secure 설정을 통해 결제 이후에도 세션이 유지가 되도
 
 해당 앱을 깔끔하게 소스 코드를 관리하고, 이력도 관리도 하고,  버전에 대한 부분도 맞춰서 올리고,
 
-테스트도 추가하여 리팩토링에 대하여 겁없이 할 수 있는 구조도 고민하면서 지속적으로 프로젝트를 발전시켜야 해야한다고 생각이 들었다.
+테스트도 추가하여 리팩토링에 대하여 검증을 할 수 있는 구조도 고민하면서 지속적으로 프로젝트를 발전시켜야 한다고 생각이 들었다.
 
 단순히 서비스를 개발한다는 것 보단 개발된 서비스를 어떻게 관리를 하고 있는지가 매우 중요하다고 이번 개발에서 한번더 크게 느끼게 되었다.
-
-
-
-
-
 
 
  
