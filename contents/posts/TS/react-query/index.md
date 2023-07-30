@@ -11,14 +11,14 @@ tags:
 series: "axios + react-query + typescript"
 ---
 
-# react-query 란
+## react-query 란
 
 react-query는 캐싱 및 서버 상태 관리를 자동으로 처리하여 비동기 데이터 요청을 관리를 하는 라이브러리 입니다.  axios + react-query 조합을 사용하여 API를 호출하고 호출 된 데이터를 캐싱처리 하며, 또 userQuery에 대한 제네릭 타입도 어떤식으로 설정해서 사용하는지 확인 합니다.
 
 > react-query v4를 사용 했습니다.
 >
 
-# useQuery
+## useQuery
 
 useQuery는 react-useQuery는 웹 애플리케이션에서 데이터를 서버로부터 가져오는데 사용되는 React 훅입니다. REST API 같은 서버에서 데이터를 가져오는데 사용하게 됩니다.
 
@@ -53,7 +53,7 @@ export declare function useQuery<
     - 쿼리 키는 useQuery가 서버에 요청할 때 사용되는 매개변수로, 이를 통해 서버에서 필요한 데이터를 식별합니다.
     - `type QueryKey = string | readonly unknown[];`
 
-# useQuery + Axios 타입 랩핑하기
+## useQuery + Axios 타입 랩핑하기
 
 React app에서 데이터를 가져오는 데 사용되는 `@tanstack/react-query` 라이브러리와 `axios`를 이용한 커스텀 훅인 `useQueryWrap`을 정의하는 TypeScript 코드입니다.
 
@@ -94,7 +94,7 @@ export const useQueryWrap = <ResData, ErrorResData = unknown, U = ResData>(
 
 `useQuery`는 선언적인 문법을 사용하여 데이터를 가져오고 관리합니다.  비동기 요청을 직접 관리하는 대신 `useQuery` 훅을 사용하여 데이터를 요청하고 상태를 추적할 수 있습니다.
 
-# useMutation + Axios 타입 랩핑하기
+## useMutation + Axios 타입 랩핑하기
 
 React App에서 데이터를 변경하는 데 사용되는 `@tanstack/react-query` 라이브러리와 `axios`를 이용한 커스텀 훅인 `useMutationWrap`을 정의하는 TypeScript 코드입니다.
 
@@ -134,7 +134,7 @@ export const useMutationWrap = <ResData, ErrorResData = unknown, U = ResData>(
 
 # 예제를 통해 코드 작성하기
 
-useQueryWrap
+## useQueryWrap
 
 ```tsx
 const { data } = useQueryWrap<resCategoryInfo, any, number>(
@@ -180,7 +180,7 @@ useQueryWrap에 제네릭 타입을 지정하고,  queryKey, axios query, option
 
 두번째 예시에 select를 사용하는 경우 data 타입을 변경이 되는 경우 3번째 제네릭에 타입을 셋팅하여 반환을 시켜야 합니다.
 
-useMutationWrap
+## useMutationWrap
 
 ```tsx
 const { mutate: create, mutateAsync } = useMutationWrap(testCategory, {
@@ -206,7 +206,7 @@ mutateAsync는 Promise를 리턴 받게 되며, 셋팅한 axios를 통하여 데
 
 즉 mutates는 호출하고 따로 후 처리가 없는 경우 주로 사용이 되며, 데이터 변경이 일어난 후 새로운 처리가 필요한 경우 mutateAsync를 사용하게 됩니다.
 
-## 정리
+# 정리
 
 React Query는 사용성에 있어서 많은 편의 기능을 제공하지만, 라이브러리의 설계 관점을 이해하고 적절한 패턴으로 사용하지 않으면 디버깅이 어려워지거나 컴포넌트 및 화면에 의존성이 많이 생겨 복잡성이 증가할 수 있습니다.
 
