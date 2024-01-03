@@ -34,9 +34,9 @@ series: "2023년 회고"
 
 ### 자동화 작업 1 - Bitbucket PR 알림 봇
 
-Bitbucket PR 알림 봇 개발
+첫번째로 bitbucket PR 알림 봇 개발
 팀원들이 PR을 올릴 때마다 메신저로 입력하여, 전송하는 번거로운 작업을 개선하기 위해 Webhook을 활용한 알림 봇을 개발했습니다.
-PR의 open, close, approve, reviewer comment에 대한 정보를 감지하여 해당 내용을 특정 채널에 자동으로 전송하는 Hook을 구현했습니다.
+PR의 open, close, approve, reviewer, comment에 대한 정보를 감지하여 해당 내용을 특정 채널에 자동으로 전송하는 Hook을 구현했습니다.
 
 ![pr](pr.png)
 
@@ -54,7 +54,7 @@ PR의 open, close, approve, reviewer comment에 대한 정보를 감지하여 �
 
 ### 자동화 작업 3 - Event Alert Bot
 
-세 번째 자동화 작업은, 팀에서 진행하는 다수의 이벤트 페이지의 개발과 관련된 "Event Alert Bot"입니다.
+세 번째 자동화 작업은 팀에서 진행하는 다수의 이벤트 페이지의 개발과 관련된 "Event Alert Bot"입니다.
 
 Event Alert Bot 개발
 매달 개발되는 수많은 이벤트 페이지의 open 및 close 날짜를 알기 위한 불편함을 해소하기 위해, 알람리스트 데이터를 추출하여  cronjob 스케줄 서버를 활용하여 이벤트 시작/종료 시간을 감지하고 알림을 전송하는 Hook을 개발했습니다.
