@@ -57,7 +57,7 @@ SPA 환경에서는 주로 다음 용도로 사용된다.
 
 middleware는 **라우터가 관리하는 상태로 동작하며, React 컴포넌트 렌더링과는 별개로 실행된다**는 것이다.
 
----
+
 
 ### 1-2. loader란 무엇인가
 
@@ -188,7 +188,7 @@ throw redirect 통해 URL를 이동 시켜도 된다.
 
 이 단계에서는 아직 React 컴포넌트는 렌더되지 않는다.
 
----
+
 
 ### 2-2. 리액트 영역이란 무엇인가
 
@@ -223,7 +223,7 @@ SPA 환경에서 네비게이션이 발생했을 때의 전체 흐름은 다음�
 
 middleware 중간에 redirect나 error가 발생하면, 이후 단계는 실행되지 않는다.
 
----
+
 
 ### 4-2. loader 실행 시점
 
@@ -245,7 +245,7 @@ loader는 **leaf route에서 `next()`가 호출되는 순간 실행**된다.
 
 이 시점에서 **어떤 화면을 렌더할지에 대한 모든 정보가 준비**된다.
 
----
+
 
 ### 5-2. 리액트 영역에서 시작되는 일들
 
@@ -257,7 +257,7 @@ loader는 **leaf route에서 `next()`가 호출되는 순간 실행**된다.
 
 즉, **데이터는 준비됐지만 화면 JS가 아직 로딩 중인 상태**가 가능하다.
 
----
+
 
 ### 5-3. loader/context 데이터는 어떻게 사용되는가
 
@@ -269,10 +269,11 @@ loader에서 반환한 데이터는 다음 훅으로 접근한다.
 middleware에서 저장한 context 데이터 역시, 이후 loader나 컴포넌트에서 접근 가능하다.
 이 데이터들은 모두 **라우터가 관리하는 상태**다.
 
-useLoaderData() router 페이지에 연결된 loader 데이터를 받을 수 있으며, useRouteLoaderData(:id) 통해서 router id 별로 정의한 loader context 데이터를 가져 올 수 있다.
+useLoaderData() 훅은 router 페이지에 연결된 loader context 데이터를 가져와 사용할 수 있다.
+useRouteLoaderData(:id) 훅은 router id 별로 정의한 loader context 데이터를 사용할 수 있다.
 
 
----
+
 
 ### 5-4. 여러개 middleware, loader가 동작하는 flow
 
@@ -419,6 +420,8 @@ export function AppRouter() {
 
 ![total_router_flow.png](total_router_flow.png)
 
+---
+
 ## 6. 실무에서 middleware와 loader는 언제 쓰면 좋을까
 
 middleware는 **“이 라우트에 들어가도 되는가?”**를 판단할 때 적합하다.
@@ -448,7 +451,7 @@ middleware를 여러개 공통으로 만들어 화면별로 조합으로 사용�
 SPA 환경에서 middleware는 어디까지나 **클라이언트 가드**다.
 실제 보안 검증은 반드시 API 서버에서 수행되어야 한다.
 
----
+
 
 ### 7-2. “렌더랑 동시에 실행된다”는 착각
 
