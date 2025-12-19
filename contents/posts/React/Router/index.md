@@ -207,7 +207,7 @@ throw redirect 통해 URL를 이동 시켜도 된다.
 
 SPA 환경에서 네비게이션이 발생했을 때의 전체 흐름은 다음과 같다.
 
-![basic_flow.png](./basic_flow.png)
+![basic_flow.png](basic_flow.png)
 
 ---
 
@@ -268,6 +268,9 @@ loader에서 반환한 데이터는 다음 훅으로 접근한다.
 
 middleware에서 저장한 context 데이터 역시, 이후 loader나 컴포넌트에서 접근 가능하다.
 이 데이터들은 모두 **라우터가 관리하는 상태**다.
+
+useLoaderData() router 페이지에 연결된 loader 데이터를 받을 수 있으며, useRouteLoaderData(:id) 통해서 router id 별로 정의한 loader context 데이터를 가져 올 수 있다.
+
 
 ---
 
@@ -414,7 +417,7 @@ export function AppRouter() {
 }
 ```
 
-![total_router_flow.png](./total_router_flow.png)
+![total_router_flow.png](total_router_flow.png)
 
 ## 6. 실무에서 middleware와 loader는 언제 쓰면 좋을까
 
@@ -431,9 +434,14 @@ loader는 **“이 화면을 렌더하기 위해 필요한 데이터”**를 준
 
 두 기능을 섞어 쓰기보다는, **책임을 명확히 분리하는 것이 유지보수에 유리하다.**
 
+예를 들어 Root 영역에서 체크해야하는 middleware (로그인 체크, 페이지 정보...)
+실제 렌더링 되는 router에서 실행되는 middleware (초기 상태 데이터 리스트) 
+
+middleware를 여러개 공통으로 만들어 화면별로 조합으로 사용하다보니 유지 보수도 깔끔하지는 장점이 있다.
+
 ---
 
-## 7. 주의사항 및 
+## 7. 주의사항 및 팁
 
 ### 7-1. 클라이언트 미들웨어는 보안이 아니다
 
@@ -449,6 +457,16 @@ middleware와 loader는 **렌더 전에 실행**된다.
 middleware, loader를 통하면 청크 JS를 로드하기 전에 청크파일 변경 여부를 알 수 도있다.
 
 청크가 변경되었다면 리액트 렌더링 단계 진입 전에 강제로 새로고침을 유도하는 로직을 middleware에 넣을 수 있다.
+
+
+### 7-3. middleware 로직이 과하면 안된다.
+
+Middleware 영역에서 무거운 API를 호출하거나 복잡한 비즈니스 로직을 실행할 경우, 그만큼 사용자에게 흰 화면이 노출되는 시간이 길어질 수 있으므로 주의가 필요하다.
+
+앱에서 사용하는 초기 레이아웃 데이터, 인증·검증·인가 로직 등을 무분별하게 middleware 영역으로 이동하기보다는, 반드시 영향도 분석과 함께 실제로 더 효율적인 선택인지 충분히 고민한 후 작업해야 한다.
+
+API 응답이 지연되는 상황은 언제든 발생할 수 있으므로,
+타임아웃을 설정해서 오랫동안 대기하지 않도록 하고, 일정 시간 초과 시 즉시 화면에 진입시키거나 Error Boundary로 이동시키는 로직은 고민하여 추가 해야할 것 같다.
 
 
 ---
