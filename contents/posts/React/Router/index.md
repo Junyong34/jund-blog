@@ -1,5 +1,5 @@
 ---
-title: "렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader”
+title: "렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader"
 description: "middleware, loader 동작 구조를 이해하고 실무에서 어떤식으로 사용하면 좋을지 고민해봅니다."
 date: 2025-12-19
 update: 2025-12-19
@@ -17,7 +17,7 @@ series: "react-router v7"
 
 ---
 
-# 렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader🚀
+# 렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader 🚀
 
 ---
 
@@ -82,8 +82,8 @@ loader를 사용하면
 * 컴포넌트 내부 `useEffect`에서 하던 데이터 패칭을 라우터 영역(middleware)으로 옮길 수 있고
 * 페이지 단위로 데이터 흐름을 명확하게 정의할 수 있어 라우터 영역에 대한 flow 처리를 하면 더 쉽게 관리할 수 있다.
 
-loader의 기능 
-* 화면이 렌더되기 전에 필요한 데이터를 준비하는 것 
+loader의 기능
+* 화면이 렌더되기 전에 필요한 데이터를 준비하는 것
 * 페이지 별로 로더를 정의하여 데이터 패칭 로직을 분리하는 것
 
 
@@ -441,7 +441,7 @@ loader는 **“이 화면을 렌더하기 위해 필요한 데이터”**를 준
 두 기능을 섞어 쓰기보다는, **책임을 명확히 분리하는 것이 유지보수에 유리하다.**
 
 예를 들어 Root 영역에서 체크해야하는 middleware (로그인 체크, 페이지 정보...)
-실제 렌더링 되는 router에서 실행되는 middleware (초기 상태 데이터 리스트) 
+실제 렌더링 되는 router에서 실행되는 middleware (초기 상태 데이터 리스트)
 
 middleware를 여러개 공통으로 만들어 화면별로 조합으로 사용하다보니 유지 보수도 깔끔하지는 장점이 있다.
 
