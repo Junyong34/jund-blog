@@ -1,5 +1,5 @@
 ---
-title: "렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader”"
+title: "렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader”
 description: "middleware, loader 동작 구조를 이해하고 실무에서 어떤식으로 사용하면 좋을지 고민해봅니다."
 date: 2025-12-19
 update: 2025-12-19
@@ -8,12 +8,16 @@ tags:
   - vite
   - SPA
   - react-router
+  - react-router-v7
+  - middleware
+  - loader
+  - useLoaderData
 series: "react-router v7"
 ---
 
 ---
 
-# 렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader
+# 렌더보다 먼저 실행되는 코드: React Router v7 middleware와 loader🚀
 
 ---
 
