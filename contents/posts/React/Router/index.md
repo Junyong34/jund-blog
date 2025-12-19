@@ -78,23 +78,22 @@ loader를 사용하면
 * 컴포넌트 내부 `useEffect`에서 하던 데이터 패칭을 라우터 영역(middleware)으로 옮길 수 있고
 * 페이지 단위로 데이터 흐름을 명확하게 정의할 수 있어 라우터 영역에 대한 flow 처리를 하면 더 쉽게 관리할 수 있다.
 
-loader의 핵심적 기능 
+loader의 기능 
 * 화면이 렌더되기 전에 필요한 데이터를 준비하는 것 
 * 페이지 별로 로더를 정의하여 데이터 패칭 로직을 분리하는 것
 
 
 ## 1-3. React Router 데이터 관리`context`
 
-React Router의 **`context`**는 라우팅 과정(특히 **loader / action**)에서 공통으로 필요한 값을 **요청 단위로 주입(inject)** 해서 꺼내 쓰도록 제공하는 “라우터 전용 컨텍스트”입니다.  
-React의 `Context.Provider`처럼 컴포넌트 트리 렌더링을 위한 전역 상태를 흘려보내는 개념이라기보다, **라우터가 loader/action을 실행할 때 함께 전달하는 실행 환경**에 가깝습니다.
+React Router의 **`context`**는 라우팅 과정(특히 **loader**)에서 공통으로 필요한 값을 **요청 단위로 주입(inject)** 해서 꺼내 쓰도록 제공하는 “라우터 전용 컨텍스트”입니다.  
+React의 `Context.Provider`처럼 컴포넌트 트리 렌더링을 위한 전역 상태를 흘려보내는 개념이라기보다, **라우터가 loader 실행할 때 함께 전달하는 실행 환경**에 가깝습니다.
 
-### 왜 쓰나?
-- **loader/action에서 인증 정보, API 클라이언트, 설정 값** 등을 매번 import/싱글톤으로 잡지 않고, 라우터 생성 시점에 한 번 구성해서 주입할 수 있습니다.
-- 테스트가 쉬워집니다(컨텍스트만 바꿔서 loader/action 단위 테스트 가능).
-- 요청/세션별 값(예: 로그인 상태, locale 등)을 **loader/action의 인자로 일관되게 전달**할 수 있습니다.
+### 왜 사용할까?
+- **loader에서 인증 정보, API 클라이언트, 설정 값** 등을 라우터 생성 시점에 한 번 구성해서 주입할 수 있습니다.
+- 요청/세션별 값(예: 로그인 상태, 화면 레이아웃 구성, 초기 상태 데이터 등)을 **loader 인자로 일관되게 전달**할 수 있습니다.
 
 ### 어디서 접근하나?
-- `loader({ request, params, context })` 또는 `action({ request, params, context })`의 **세 번째 축인 `context`**에서 접근합니다.
+- `loader({ request, params, context })`의 **세 번째 축인 `context`**에서 접근합니다.
 - 보통 `context.get(...)` 형태로 꺼내 쓰게 “토큰”을 만들어두고(예: `createContext()`), 이를 키로 저장/조회합니다.
 
 ---
@@ -164,7 +163,7 @@ function Page() {
 
 위 코드를 요약정리 하면 다음과 같다.
 
-router에 middleware, loader를 등록 하고  authMiddleware에서 로그인 체크여부 API 를 호출하고 응답 값을 context에 set 처리를 하고 loader에서 context get으로 가져와서 화면으로 내려준다.
+router에 middleware, loader를 등록 하고 authMiddleware에서 로그인 체크여부 API 를 호출하고 응답 값을 context에 set 처리를 하고 loader에서 context get으로 가져와서 화면으로 내려준다.
 
 화면까지 내려가지 않고 인증이 실패하면 middleware에서 `throw redirect(`/login?returnUrl=${encodeURIComponent(new URL(args.request.url).pathname)}`);`
 throw redirect 통해 URL를 이동 시켜도 된다.
