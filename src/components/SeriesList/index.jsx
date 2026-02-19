@@ -1,100 +1,110 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import styled from "styled-components"
 import _ from "lodash"
 
 import { Link } from "gatsby"
 
-import Title from "components/Title"
-import Divider from "components/Divider"
+const SeriesListWrapper = styled.section`
+  margin-bottom: 48px;
+`
 
-const SeriesListWrapper = styled.div`
-  margin-bottom: 60px;
-  @media (max-width: 768px) {
-    padding: 0 10px;
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 780px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 `
 
-const SeriesWrapper = styled.div`
-  position: relative;
-  top: 0;
-  transition: all 0.5s;
+const Card = styled.article`
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 18px;
+  background: ${props => props.theme.colors.surface};
+  padding: 20px;
+  transition: transform 0.18s ease, border-color 0.18s ease;
 
-  @media (max-width: 768px) {
-    padding: 0 5px;
+  &:hover {
+    transform: translateY(-2px);
+    border-color: ${props => props.theme.colors.activatedBorder};
   }
 `
 
-const SeriesInform = styled.div`
+const SeriesTitle = styled.h2`
+  margin-bottom: 10px;
+  line-height: 1.3;
+  font-size: 24px;
+  font-weight: 700;
+
+  a {
+    color: ${props => props.theme.colors.text};
+    text-decoration: none;
+  }
+`
+
+const Meta = styled.div`
   display: flex;
   align-items: center;
+  gap: 8px;
+  font-size: 13px;
   color: ${props => props.theme.colors.tertiaryText};
-
-  & > span {
-    margin: 0 5px;
-  }
-`
-
-const Date = styled.p`
-  font-size: 14.4px;
-`
-
-const PostCount = styled.p`
-  font-size: 14.4px;
 `
 
 const checkIsScrollAtBottom = () => {
   return (
     document.documentElement.scrollHeight -
       document.documentElement.scrollTop <=
-    document.documentElement.clientHeight + 100
+    document.documentElement.clientHeight + 120
   )
 }
 
 const SeriesList = ({ seriesList }) => {
-  const [seriesCount, setSeriesCount] = useState(10)
+  const [seriesCount, setSeriesCount] = useState(8)
 
-  const handleMoreLoad = _.throttle(() => {
-    if (checkIsScrollAtBottom() && seriesCount < seriesList.length) {
-      setTimeout(() => setSeriesCount(seriesCount + 10), 300)
-    }
-  }, 250)
+  const handleMoreLoad = useMemo(
+    () =>
+      _.throttle(() => {
+        if (checkIsScrollAtBottom() && seriesCount < seriesList.length) {
+          setSeriesCount(prev => prev + 4)
+        }
+      }, 250),
+    [seriesCount, seriesList.length]
+  )
 
   useEffect(() => {
     window.addEventListener("scroll", handleMoreLoad)
 
     return () => {
       window.removeEventListener("scroll", handleMoreLoad)
+      handleMoreLoad.cancel()
     }
-  }, [seriesCount, seriesList])
+  }, [handleMoreLoad])
 
   useEffect(() => {
-    setSeriesCount(10)
+    setSeriesCount(8)
   }, [seriesList])
 
   return (
     <SeriesListWrapper>
-      {seriesList.slice(0, seriesCount).map((series, i) => {
-        return (
-          <div key={i}>
-            <SeriesWrapper>
-              <Title size="bg">
+      <Grid>
+        {seriesList.slice(0, seriesCount).map((series, i) => {
+          return (
+            <Card key={JSON.stringify({ name: series.name, i })}>
+              <SeriesTitle>
                 <Link to={`/series/${_.replace(series.name, /\s/g, "-")}`}>
                   {series.name}
                 </Link>
-              </Title>
-              <SeriesInform>
-                <PostCount>{series.posts.length} Posts</PostCount>
+              </SeriesTitle>
+              <Meta>
+                <span>{series.posts.length} Posts</span>
                 <span>·</span>
-                <Date>Last updated on {series.lastUpdated}</Date>
-              </SeriesInform>
-            </SeriesWrapper>
-
-            {seriesCount - 1 !== i && seriesList.length - 1 !== i && (
-              <Divider mt="48px" mb="32px" />
-            )}
-          </div>
-        )
-      })}
+                <span>Last updated on {series.lastUpdated}</span>
+              </Meta>
+            </Card>
+          )
+        })}
+      </Grid>
     </SeriesListWrapper>
   )
 }

@@ -8,17 +8,21 @@ import { graphql } from "gatsby"
 import Layout from "components/Layout"
 import Title from "components/Title"
 import SeriesList from "components/SeriesList"
-import { VerticalSpace } from "components/VerticalSpace"
 import NoContent from "components/NoContent"
 
 import { title, description, siteUrl } from "../../blog-config"
 
-const TagListWrapper = styled.div`
-  margin-top: 20px;
+const HeaderCard = styled.section`
+  margin-bottom: 24px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 20px;
+  background: ${props => props.theme.colors.surface};
+  padding: 18px;
+`
 
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const SummaryText = styled.p`
+  color: ${props => props.theme.colors.secondaryText};
+  font-size: 15px;
 `
 
 const SeriesPage = ({ data }) => {
@@ -26,13 +30,13 @@ const SeriesPage = ({ data }) => {
   const series = flow(
     map(post => ({ ...post.frontmatter, slug: post.fields.slug })),
     groupBy("series"),
-    map(series => ({
-      name: series[0].series,
-      posts: series,
-      lastUpdated: series[0].date,
+    map(seriesGroup => ({
+      name: seriesGroup[0].series,
+      posts: seriesGroup,
+      lastUpdated: seriesGroup[0].date,
     })),
-    sortBy(series => new Date(series.lastUpdated)),
-    filter(series => series.name),
+    sortBy(seriesGroup => new Date(seriesGroup.lastUpdated)),
+    filter(seriesGroup => seriesGroup.name),
     reverse
   )(posts)
 
@@ -40,17 +44,20 @@ const SeriesPage = ({ data }) => {
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
 
-      <TagListWrapper>
-        {series.length > 0 && (
-          <Title size="sm">There are {series.length} series.</Title>
-        )}
-      </TagListWrapper>
+      <HeaderCard>
+        <Title as="h1" size="md">
+          시리즈 {series.length}개
+        </Title>
+        <SummaryText>
+          주제별로 묶인 포스트를 시간 순서로 확인할 수 있습니다.
+        </SummaryText>
+      </HeaderCard>
 
-      {series.length === 0 && <NoContent name="series" />}
-
-      <VerticalSpace size={32} />
-
-      <SeriesList seriesList={series} />
+      {series.length === 0 ? (
+        <NoContent name="series" />
+      ) : (
+        <SeriesList seriesList={series} />
+      )}
     </Layout>
   )
 }

@@ -1,12 +1,10 @@
 import styled from "styled-components"
 
 const StyledMarkdown = styled.div`
-  & {
-    font-size: 17.6px;
-    color: ${props => props.theme.colors.text};
-    line-height: 1.7;
-    overflow: hidden;
-  }
+  color: ${props => props.theme.colors.text};
+  font-size: 16px;
+  line-height: 1.78;
+  overflow: hidden;
 
   & *:first-child {
     margin-top: 0;
@@ -25,12 +23,8 @@ const StyledMarkdown = styled.div`
   }
 
   & p {
-    overflow-x: scroll;
-    word-break: break-all;
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
+    word-break: keep-all;
+    color: ${props => props.theme.colors.secondaryText};
   }
 
   & h2,
@@ -38,38 +32,34 @@ const StyledMarkdown = styled.div`
   & h4,
   & h5,
   & h6 {
-    margin: 11.2px 0 4.8px 0;
+    margin: 40px 0 14px;
     font-weight: 700;
   }
 
   & h2 {
-    margin-top: 64px;
-    margin-bottom: 24px;
-    font-size: 28px;
+    font-size: 32px;
+    margin-top: 56px;
   }
 
   & h3 {
-    margin-top: 48px;
-    margin-bottom: 24px;
-    font-size: 22.4px;
+    font-size: 26px;
   }
 
   & h4 {
-    margin-top: 32px;
-    margin-bottom: 24px;
-    font-size: 17.6px;
+    font-size: 22px;
   }
 
   & h5 {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   & h6 {
-    font-size: 14.4px;
+    font-size: 15px;
   }
 
   & strong {
     font-weight: 700;
+    color: ${props => props.theme.colors.text};
   }
 
   & em {
@@ -77,26 +67,28 @@ const StyledMarkdown = styled.div`
   }
 
   & blockquote {
-    padding: 18px 24px;
+    padding: 16px 20px;
     border-left: 4px solid ${props => props.theme.colors.blockQuoteBorder};
+    border-radius: 0 12px 12px 0;
     background-color: ${props => props.theme.colors.blockQuoteBackground};
-
-    & *:last-child {
-      margin-bottom: 0;
-    }
   }
 
   & blockquote blockquote {
-    margin-top: 24px;
+    margin-top: 20px;
   }
 
   & table {
+    width: 100%;
     border-collapse: collapse;
+    border: 1px solid ${props => props.theme.colors.border};
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   & th {
-    border-bottom: 2px solid ${props => props.theme.colors.border};
+    border-bottom: 1px solid ${props => props.theme.colors.border};
     font-weight: 700;
+    background: ${props => props.theme.colors.surfaceMuted};
   }
 
   & td {
@@ -105,8 +97,8 @@ const StyledMarkdown = styled.div`
   }
 
   & td,
-  th {
-    padding: 8px;
+  & th {
+    padding: 10px;
   }
 
   & tr:first-child td {
@@ -122,11 +114,13 @@ const StyledMarkdown = styled.div`
   }
 
   & p > code {
-    word-break: break-all;
+    word-break: break-word;
   }
 
   pre[class*="language-"] {
-    background-color: #1e1e1e;
+    padding: 18px;
+    border-radius: 14px;
+    background-color: #0f172a;
   }
 
   & h2 > code.language-text,
@@ -135,11 +129,12 @@ const StyledMarkdown = styled.div`
   & p > code.language-text,
   & li > code.language-text,
   & table code.language-text {
-    padding: 1.6px 4.8px;
-    font-size: 14.4px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 14px;
     background-color: ${props => props.theme.colors.inlineCodeBackground};
-    font-weight: bold;
     color: ${props => props.theme.colors.text};
+    font-weight: 700;
   }
 
   & h2 > code.language-text,
@@ -154,7 +149,7 @@ const StyledMarkdown = styled.div`
 
   & ul,
   & ol {
-    padding-left: 32px;
+    padding-left: 30px;
   }
 
   & ol {
@@ -174,7 +169,7 @@ const StyledMarkdown = styled.div`
   }
 
   & li {
-    margin-bottom: 12.8px;
+    margin-bottom: 10px;
   }
 
   & li p {
@@ -183,19 +178,21 @@ const StyledMarkdown = styled.div`
 
   & pre {
     ::-webkit-scrollbar {
-      height: 12px;
+      height: 10px;
     }
+
     ::-webkit-scrollbar-track {
       background: ${props => props.theme.colors.scrollTrack};
     }
 
     ::-webkit-scrollbar-thumb {
       background: ${props => props.theme.colors.scrollHandle};
+      border-radius: 999px;
     }
   }
 
   & pre > code {
-    font-size: 14.4px;
+    font-size: 14px;
   }
 
   & img {
@@ -203,12 +200,13 @@ const StyledMarkdown = styled.div`
     margin-left: auto;
     margin-right: auto;
     max-width: 100%;
+    border-radius: 12px;
   }
 
   & figcaption {
     margin-top: 5px;
     text-align: center;
-    color: #868e96;
+    color: ${props => props.theme.colors.tertiaryText};
     font-size: 12px;
     font-style: italic;
   }
@@ -219,13 +217,12 @@ const StyledMarkdown = styled.div`
   }
 
   & a {
-    padding: 1.6px 0;
-    color: ${props => props.theme.colors.text};
+    color: ${props => props.theme.colors.accent};
+    text-decoration-color: rgba(245, 158, 11, 0.42);
   }
 
   & a:hover {
-    background-color: ${props => props.theme.colors.text};
-    color: ${props => props.theme.colors.hoveredLinkText};
+    color: ${props => props.theme.colors.accentHover};
   }
 `
 

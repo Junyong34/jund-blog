@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import styled, { useTheme } from "styled-components"
 
 import { Link } from "gatsby"
@@ -15,153 +15,204 @@ import {
 } from "react-icons/fa"
 
 const HeaderWrapper = styled.header`
-  display: block;
   position: fixed;
-  top: ${props => (props.isHidden ? -60 : 0)}px;
-  left: 0;
+  top: 0;
   right: 0;
-  padding: 16px;
+  left: 0;
+  z-index: 100;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   background-color: ${props => props.theme.colors.headerBackground};
-  box-shadow: 0 0 8px ${props => props.theme.colors.headerShadow};
-  backdrop-filter: blur(5px);
-  opacity: ${props => (props.isHidden ? 0 : 1)};
-  transition: top 0.5s, opacity 0.5s;
-  z-index: 999;
-
-  @media (max-width: 768px) {
-    padding: 16px 0;
-  }
+  box-shadow: 0 8px 24px ${props => props.theme.colors.headerShadow};
+  backdrop-filter: blur(10px);
 `
 
 const Inner = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 0 64px;
-
-  @media (max-width: 768px) {
-    margin: 0 15px;
-  }
-`
-
-const BlogTitle = styled.span`
-  letter-spacing: -1px;
-  font-family: "Source Code Pro", sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  color: ${props => props.theme.colors.text};
-
-  & > a {
-    text-decoration: none;
-    color: inherit;
-  }
-`
-
-const Menu = styled.div`
+  margin: 0 auto;
+  padding: 14px 24px;
+  max-width: 1160px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
 
-  & svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 15px;
-    cursor: pointer;
-  }
-
-  & svg path {
-    fill: ${props => props.theme.colors.icon};
-    transition: fill 0.3s;
-  }
-
-  & svg:hover path {
-    fill: ${props => props.theme.colors.text};
+  @media (max-width: 768px) {
+    padding: 12px 14px;
   }
 `
 
-const ToggleWrapper = styled.div`
-  width: 20px;
-  height: 24px;
-  margin-right: 15px;
-  overflow: hidden;
-  box-sizing: border-box;
+const Brand = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: ${props => props.theme.colors.text};
 `
 
-const IconRail = styled.div`
-  position: relative;
-  display: flex;
+const BrandBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: ${props => props.theme.colors.accent};
+  color: #ffffff;
+  font-family: "Source Code Pro", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+`
+
+const BrandText = styled.span`
+  display: inline-flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 40px;
-  top: ${props => (props.theme === "light" ? "-19px" : "0px")};
-  transition: top 0.4s;
+  gap: 1px;
+`
 
-  & > svg {
-    transition: opacity 0.25s;
+const BrandTitle = styled.span`
+  font-family: "Source Code Pro", "Noto Sans KR", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+`
+
+const BrandSub = styled.span`
+  font-size: 12px;
+  color: ${props => props.theme.colors.tertiaryText};
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`
+
+const Menu = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const NavLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: ${props => props.theme.colors.secondaryText};
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.18s ease, background-color 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover,
+  &.active {
+    color: ${props => props.theme.colors.accent};
+    background-color: ${props => props.theme.colors.accentSubtle};
+    transform: translateY(-1px);
   }
 
-  & > svg:first-child {
-    opacity: ${props => (props.theme === "light" ? 0 : 1)};
+  @media (max-width: 900px) {
+    span {
+      display: none;
+    }
+
+    padding: 8px;
+  }
+`
+
+const ExternalLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: ${props => props.theme.colors.secondaryText};
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.18s ease, background-color 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover {
+    color: ${props => props.theme.colors.accent};
+    background-color: ${props => props.theme.colors.accentSubtle};
+    transform: translateY(-1px);
   }
 
-  & > svg:last-child {
-    opacity: ${props => (props.theme === "dark" ? 0 : 1)};
+  @media (max-width: 900px) {
+    span {
+      display: none;
+    }
+
+    padding: 8px;
+  }
+`
+
+const ThemeButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 10px;
+  background: ${props => props.theme.colors.surface};
+  color: ${props => props.theme.colors.icon};
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+
+  &:hover {
+    color: ${props => props.theme.colors.accent};
+    border-color: ${props => props.theme.colors.activatedBorder};
+    transform: translateY(-1px);
   }
 `
 
 const Header = ({ toggleTheme }) => {
   const theme = useTheme()
-  const [scrollY, setScrollY] = useState()
-  const [hidden, setHidden] = useState(false)
-
-  const detectScrollDirection = () => {
-    if (scrollY >= window.scrollY) {
-      // scroll up
-      setHidden(false)
-    } else if (scrollY < window.scrollY && 400 <= window.scrollY) {
-      // scroll down
-      setHidden(true)
-    }
-
-    setScrollY(window.scrollY)
-  }
-
-  useEffect(() => {
-    window.addEventListener("scroll", detectScrollDirection)
-
-    return () => {
-      window.removeEventListener("scroll", detectScrollDirection)
-    }
-  }, [scrollY])
-
-  useEffect(() => {
-    setScrollY(window.scrollY)
-  }, [])
+  const ThemeIcon = theme.name === "light" ? FaMoon : FaSun
 
   return (
-    <HeaderWrapper isHidden={hidden}>
+    <HeaderWrapper>
       <Inner>
-        <BlogTitle>
-          <Link to="/">{title}</Link>
-        </BlogTitle>
-        <Menu>
-          <ToggleWrapper>
-            <IconRail theme={theme.name}>
-              <FaSun onClick={toggleTheme} />
-              <FaMoon onClick={toggleTheme} />
-            </IconRail>
-          </ToggleWrapper>
-          <Link to="/tags">
-            <FaTags />
-          </Link>
-          <Link to="/series">
-            <FaListUl />
-          </Link>
-          <Link to="/rss.xml">
-            <FaRss />
-          </Link>
-          <Link to="/search">
-            <FaSearch style={{ marginRight: 0 }} />
-          </Link>
+        <Brand to="/" aria-label="홈으로 이동">
+          <BrandBadge>JD</BrandBadge>
+          <BrandText>
+            <BrandTitle>{title}</BrandTitle>
+            <BrandSub>Front-end Engineering Notes</BrandSub>
+          </BrandText>
+        </Brand>
+
+        <Menu aria-label="주요 메뉴">
+          <NavLink to="/tags" activeClassName="active" aria-label="태그 페이지">
+            <FaTags aria-hidden="true" />
+            <span>Tags</span>
+          </NavLink>
+          <NavLink
+            to="/series"
+            activeClassName="active"
+            aria-label="시리즈 페이지"
+          >
+            <FaListUl aria-hidden="true" />
+            <span>Series</span>
+          </NavLink>
+          <NavLink
+            to="/search"
+            activeClassName="active"
+            aria-label="검색 페이지"
+          >
+            <FaSearch aria-hidden="true" />
+            <span>Search</span>
+          </NavLink>
+          <ExternalLink href="/rss.xml" aria-label="RSS 피드">
+            <FaRss aria-hidden="true" />
+            <span>RSS</span>
+          </ExternalLink>
+          <ThemeButton
+            type="button"
+            onClick={toggleTheme}
+            aria-label="테마 전환"
+          >
+            <ThemeIcon aria-hidden="true" />
+          </ThemeButton>
         </Menu>
       </Inner>
     </HeaderWrapper>

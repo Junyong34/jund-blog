@@ -1,97 +1,130 @@
-import React, { useState, useEffect } from "react"
-import styled from "styled-components"
+import React, { useEffect, useMemo, useState } from "react"
+import styled, { css } from "styled-components"
 import _ from "lodash"
 
 import { Link } from "gatsby"
 
-import Title from "components/Title"
-import Divider from "components/Divider"
 import TagList from "components/TagList"
 
-const PostListWrapper = styled.div`
-  @media (max-width: 768px) {
-    padding: 0 10px;
+const Wrapper = styled.section`
+  margin-bottom: 48px;
+`
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  ${props =>
+    props.$variant === "card" &&
+    css`
+      @media (min-width: 780px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    `}
+`
+
+const Card = styled.article`
+  height: 100%;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 18px;
+  background: ${props => props.theme.colors.surface};
+  padding: 20px;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: ${props => props.theme.colors.activatedBorder};
   }
 `
 
-const PostWrapper = styled.div`
-  position: relative;
-  top: 0;
-  transition: all 0.5s;
+const CardTitle = styled.h2`
+  margin-bottom: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
 
-  @media (max-width: 768px) {
-    padding: 0 5px;
+  a {
+    color: ${props => props.theme.colors.text};
+    text-decoration: none;
   }
 `
 
-const Date = styled.p`
-  margin-bottom: 16px;
-  font-size: 14.4px;
+const Meta = styled.p`
+  margin-bottom: 12px;
+  font-size: 13px;
   color: ${props => props.theme.colors.tertiaryText};
 `
 
 const Excerpt = styled.p`
-  margin-bottom: 32px;
-  line-height: 1.7;
-  font-size: 16px;
+  margin-bottom: 16px;
+  line-height: 1.65;
+  font-size: 15px;
   color: ${props => props.theme.colors.secondaryText};
-  word-break: break-all;
+  word-break: keep-all;
 `
 
 const checkIsScrollAtBottom = () => {
   return (
     document.documentElement.scrollHeight -
       document.documentElement.scrollTop <=
-    document.documentElement.clientHeight + 100
+    document.documentElement.clientHeight + 120
   )
 }
 
-const PostList = ({ postList }) => {
-  const [postCount, setPostCount] = useState(10)
+const PostList = ({ postList, variant }) => {
+  const initialCount = variant === "card" ? 8 : 10
+  const [postCount, setPostCount] = useState(initialCount)
 
-  const handleMoreLoad = _.throttle(() => {
-    if (checkIsScrollAtBottom() && postCount < postList.length) {
-      setTimeout(() => setPostCount(postCount + 10), 300)
-    }
-  }, 250)
+  const handleMoreLoad = useMemo(
+    () =>
+      _.throttle(() => {
+        if (checkIsScrollAtBottom() && postCount < postList.length) {
+          setPostCount(prev => prev + (variant === "card" ? 4 : 6))
+        }
+      }, 250),
+    [postCount, postList.length, variant]
+  )
 
   useEffect(() => {
     window.addEventListener("scroll", handleMoreLoad)
 
     return () => {
       window.removeEventListener("scroll", handleMoreLoad)
+      handleMoreLoad.cancel()
     }
-  }, [postCount, postList])
+  }, [handleMoreLoad])
 
   useEffect(() => {
-    setPostCount(10)
-  }, [postList])
+    setPostCount(initialCount)
+  }, [initialCount, postList])
 
   return (
-    <PostListWrapper>
-      {postList.slice(0, postCount).map((post, i) => {
-        const { title, date, tags } = post.frontmatter
-        const { excerpt } = post
-        const { slug } = post.fields
+    <Wrapper>
+      <Grid $variant={variant}>
+        {postList.slice(0, postCount).map((post, i) => {
+          const { title, date, tags } = post.frontmatter
+          const { excerpt } = post
+          const { slug } = post.fields
 
-        return (
-          <div key={i}>
-            <PostWrapper>
-              <Title size="bg">
+          return (
+            <Card key={JSON.stringify({ slug, i })}>
+              <CardTitle>
                 <Link to={slug}>{title}</Link>
-              </Title>
-              <Date>{date}</Date>
+              </CardTitle>
+              <Meta>{date}</Meta>
               <Excerpt>{excerpt}</Excerpt>
-              <TagList tagList={tags} />
-            </PostWrapper>
-            {postCount - 1 !== i && postList.length - 1 !== i && (
-              <Divider mt="48px" mb="32px" />
-            )}
-          </div>
-        )
-      })}
-    </PostListWrapper>
+              <TagList tagList={tags} compact />
+            </Card>
+          )
+        })}
+      </Grid>
+    </Wrapper>
   )
+}
+
+PostList.defaultProps = {
+  variant: "card",
 }
 
 export default PostList

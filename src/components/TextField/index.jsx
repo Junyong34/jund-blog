@@ -10,27 +10,26 @@ const Wrapper = styled.div`
 const Icon = styled.span`
   position: absolute;
   top: 12px;
-  left: 18px;
-  font-size: 20px;
+  left: 14px;
+  display: inline-flex;
   color: ${props => props.theme.colors.textFieldBorder};
-  text-shadow: 0 0 5px ${props => props.theme.colors.textFieldBorder};
-  transition: all 0.2s;
+  transition: color 0.18s ease;
 `
 
 const Input = styled.input.attrs({ type: "text" })`
-  padding: 14px 19.2px 12px 50px;
   width: 100%;
+  padding: 12px 14px 12px 42px;
   border: 1px solid ${props => props.theme.colors.textFieldBorder};
-  border-radius: 1vh;
-  background-color: transparent;
+  border-radius: 12px;
+  background-color: ${props => props.theme.colors.surface};
   font-size: 16px;
   color: ${props => props.theme.colors.text};
-  box-sizing: border-box;
   outline: none;
-  transition: all 0.2s;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 
   &:focus {
-    border: 1px solid ${props => props.theme.colors.textFieldActivatedBorder};
+    border-color: ${props => props.theme.colors.textFieldActivatedBorder};
+    box-shadow: 0 0 0 3px ${props => props.theme.colors.focusRing};
   }
 
   &:focus + ${Icon} {
@@ -38,16 +37,21 @@ const Input = styled.input.attrs({ type: "text" })`
   }
 `
 
-const TextField = ({ ...props }) => {
+const TextField = props => {
+  const { ariaLabel, ...rest } = props
+
   return (
     <Wrapper>
-      <Input {...props} />
-
-      <Icon>
+      <Input aria-label={ariaLabel} {...rest} />
+      <Icon aria-hidden="true">
         <FiSearch />
       </Icon>
     </Wrapper>
   )
+}
+
+TextField.defaultProps = {
+  ariaLabel: "검색어 입력",
 }
 
 export default TextField

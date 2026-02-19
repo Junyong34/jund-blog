@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { navigate } from "gatsby"
+import { Link } from "gatsby"
 import { useSelector } from "react-redux"
 import styled, { useTheme } from "styled-components"
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi"
@@ -13,136 +13,75 @@ import Divider from "components/Divider"
 import Bio from "components/Bio"
 
 const ArticleButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 48px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 30px;
 
   @media (max-width: 768px) {
-    margin-bottom: 80px;
-    padding: 0 12.8px;
-    flex-direction: column;
-
-    & > div:first-child {
-      margin-bottom: 12.8px;
-    }
+    grid-template-columns: 1fr;
   }
 `
 
-const ArrowFlexWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-`
-
-const ArticleButtonTextWrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  overflow: hidden;
-`
-
-const Arrow = styled.div`
-  position: relative;
-  left: 0;
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  flex-basis: 24px;
-  transition: left 0.3s;
-`
-
-const ArticleButtonWrapper = styled.div`
+const ArticleButton = styled(Link)`
   display: flex;
   flex-direction: column;
-  align-items: ${props => (props.right ? "flex-end" : "flex-start")};
-  padding: 20.8px 16px;
-  max-width: 250px;
-  flex-basis: 250px;
-  font-size: 17.6px;
-  border-radius: 5px;
-  background-color: ${props => props.theme.colors.nextPostButtonBackground};
+  justify-content: center;
+  min-height: 92px;
+  gap: 8px;
+  border-radius: 14px;
+  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.nextPostButtonBackground};
+  padding: 14px;
+  text-decoration: none;
   color: ${props => props.theme.colors.text};
-  cursor: pointer;
-  transition: background-color 0.3s;
+  transition: transform 0.18s ease, border-color 0.18s ease;
 
   &:hover {
-    background-color: ${props =>
-      props.theme.colors.hoveredNextPostButtonBackground};
-  }
-
-  & ${ArrowFlexWrapper} {
-    flex-direction: ${props => (props.right ? "row-reverse" : "row")};
-  }
-
-  & ${ArticleButtonTextWrapper} {
-    align-items: ${props => (props.right ? "flex-end" : "flex-start")};
-  }
-
-  & ${Arrow} {
-    ${props => (props.right ? "margin-left: 16px" : "margin-right: 16px")};
-  }
-
-  &:hover ${Arrow} {
-    left: ${props => (props.right ? 2 : -2)}px;
-  }
-
-  @media (max-width: 768px) {
-    max-width: inherit;
-    flex-basis: inherit;
+    transform: translateY(-2px);
+    border-color: ${props => props.theme.colors.activatedBorder};
+    background: ${props => props.theme.colors.hoveredNextPostButtonBackground};
   }
 `
 
-const ArticleButtonLabel = styled.div`
-  margin-bottom: 9.6px;
-  font-size: 12.8px;
+const ArticleButtonLabel = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: ${props => props.theme.colors.tertiaryText};
 `
 
-const ArticleButtonTitle = styled.div`
-  padding: 2px 0;
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
+const ArticleButtonTitle = styled.span`
+  font-size: 16px;
+  line-height: 1.35;
 `
 
-const CommentWrapper = styled.div`
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const CommentWrapper = styled.section`
+  margin-top: 24px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 18px;
+  background: ${props => props.theme.colors.surface};
+  padding: 16px;
 `
 
 const SpinnerWrapper = styled.div`
-  height: 200px;
+  height: 140px;
   display: flex;
   justify-content: center;
   align-items: center;
 `
 
 const HiddenWrapper = styled.div`
-  height: ${props => (props.isHidden ? "0px" : "auto")};
-  overflow: ${props => (props.isHidden ? "hidden" : "auto")};
+  height: ${props => (props.$isHidden ? "0px" : "auto")};
+  overflow: ${props => (props.$isHidden ? "hidden" : "visible")};
 `
-
-const ArticleButton = ({ right, children, onClick }) => {
-  return (
-    <ArticleButtonWrapper right={right} onClick={onClick}>
-      <ArrowFlexWrapper>
-        <Arrow>{right ? <BiRightArrowAlt /> : <BiLeftArrowAlt />}</Arrow>
-        <ArticleButtonTextWrapper>
-          <ArticleButtonLabel>
-            {right ? <>Next Post</> : <>Previous Post</>}
-          </ArticleButtonLabel>
-          <ArticleButtonTitle>{children}</ArticleButtonTitle>
-        </ArticleButtonTextWrapper>
-      </ArrowFlexWrapper>
-    </ArticleButtonWrapper>
-  )
-}
 
 const Spinner = () => {
   const theme = useTheme()
+
   return (
-    <SpinnerWrapper>
+    <SpinnerWrapper aria-live="polite">
       <MDSpinner singleColor={theme.colors.spinner} />
     </SpinnerWrapper>
   )
@@ -153,27 +92,29 @@ const Comment = () => {
   const [spinner, setSpinner] = useState(true)
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setSpinner(false)
-    }, 1500)
+    }, 800)
+
+    return () => clearTimeout(timer)
   }, [])
 
   return (
     <>
       {spinner && <Spinner />}
 
-      <HiddenWrapper isHidden={spinner}>
-        <HiddenWrapper isHidden={theme === "light"}>
+      <HiddenWrapper $isHidden={spinner}>
+        <HiddenWrapper $isHidden={theme === "light"}>
           <Utterances
             repo={utterances.repo}
-            theme={`github-dark`}
+            theme="github-dark"
             issueTerm={utterances.type}
           />
         </HiddenWrapper>
-        <HiddenWrapper isHidden={theme === "dark"}>
+        <HiddenWrapper $isHidden={theme === "dark"}>
           <Utterances
             repo={utterances.repo}
-            theme={`github-light`}
+            theme="github-light"
             issueTerm={utterances.type}
           />
         </HiddenWrapper>
@@ -187,21 +128,37 @@ const Footer = ({ previous, next }) => {
     <>
       <ArticleButtonContainer>
         {previous ? (
-          <ArticleButton onClick={() => navigate(previous?.fields?.slug)}>
-            {previous?.frontmatter?.title}
+          <ArticleButton
+            to={previous.fields.slug}
+            aria-label="이전 포스트로 이동"
+          >
+            <ArticleButtonLabel>
+              <BiLeftArrowAlt aria-hidden="true" /> Previous Post
+            </ArticleButtonLabel>
+            <ArticleButtonTitle>
+              {previous.frontmatter.title}
+            </ArticleButtonTitle>
           </ArticleButton>
         ) : (
-          <div></div>
+          <div />
         )}
-        {next && (
-          <ArticleButton right onClick={() => navigate(next?.fields?.slug)}>
-            {next?.frontmatter?.title}
+
+        {next ? (
+          <ArticleButton to={next.fields.slug} aria-label="다음 포스트로 이동">
+            <ArticleButtonLabel>
+              Next Post <BiRightArrowAlt aria-hidden="true" />
+            </ArticleButtonLabel>
+            <ArticleButtonTitle>{next.frontmatter.title}</ArticleButtonTitle>
           </ArticleButton>
+        ) : (
+          <div />
         )}
       </ArticleButtonContainer>
+
       <Bio />
+
       <CommentWrapper>
-        <Divider mt="32px" />
+        <Divider mt="0" mb="18px" />
         <Comment />
       </CommentWrapper>
     </>

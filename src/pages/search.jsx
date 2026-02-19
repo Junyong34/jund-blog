@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useMemo, useState } from "react"
 import styled from "styled-components"
 import SEO from "components/SEO"
 import { graphql } from "gatsby"
@@ -7,50 +7,61 @@ import Layout from "components/Layout"
 import PostList from "components/PostList"
 import TextField from "components/TextField"
 import Title from "components/Title"
-import { VerticalSpace } from "components/VerticalSpace"
 
 import { title, description, siteUrl } from "../../blog-config"
 
-const SearchWrapper = styled.div`
-  margin-top: 20px;
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const SearchHeader = styled.section`
+  margin-bottom: 24px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 20px;
+  background: ${props => props.theme.colors.surface};
+  padding: 18px;
+`
+
+const SearchDescription = styled.p`
+  margin-bottom: 12px;
+  color: ${props => props.theme.colors.secondaryText};
+  font-size: 15px;
 `
 
 const Search = ({ data }) => {
   const posts = data.allMarkdownRemark.nodes
-
   const [query, setQuery] = useState("")
 
-  const filteredPosts = useCallback(
-    posts.filter(post => {
+  const filteredPosts = useMemo(() => {
+    const lowerQuery = query.toLowerCase().trim()
+
+    if (!lowerQuery) return posts
+
+    return posts.filter(post => {
       const { frontmatter, rawMarkdownBody } = post
-      const { title } = frontmatter
-      const lowerQuery = query.toLocaleLowerCase()
+      const postTitle = frontmatter.title.toLowerCase()
+      const body = rawMarkdownBody.toLowerCase()
 
-      if (rawMarkdownBody.toLocaleLowerCase().includes(lowerQuery)) return true
-
-      return title.toLocaleLowerCase().includes(lowerQuery)
-    }),
-    [query]
-  )
+      return postTitle.includes(lowerQuery) || body.includes(lowerQuery)
+    })
+  }, [posts, query])
 
   return (
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
-      <SearchWrapper>
-        <Title size="sm">
-          There are {filteredPosts.length} post{filteredPosts.length > 1 && "s"}
-          .
+
+      <SearchHeader>
+        <Title as="h1" size="md">
+          검색 결과 {filteredPosts.length}개
         </Title>
+        <SearchDescription>
+          제목과 본문 전체에서 키워드를 검색합니다.
+        </SearchDescription>
         <TextField
+          ariaLabel="포스트 검색"
           onChange={e => setQuery(e.target.value)}
-          placeholder="Search"
+          placeholder="검색어를 입력하세요"
+          value={query}
         />
-      </SearchWrapper>
-      <VerticalSpace size={70} />
-      <PostList postList={filteredPosts} />
+      </SearchHeader>
+
+      <PostList postList={filteredPosts} variant="card" />
     </Layout>
   )
 }

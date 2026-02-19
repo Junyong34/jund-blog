@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import _ from "lodash"
 import styled from "styled-components"
 import SEO from "components/SEO"
 import filter from "lodash/filter"
 
-import { graphql, navigate } from "gatsby"
+import { graphql } from "gatsby"
 
 import queryString from "query-string"
 
@@ -12,16 +12,21 @@ import Layout from "components/Layout"
 import Title from "components/Title"
 import TagList from "components/TagList"
 import PostList from "components/PostList"
-import { VerticalSpace } from "components/VerticalSpace"
 
 import { title, description, siteUrl } from "../../blog-config"
 
-const TagListWrapper = styled.div`
-  margin-top: 20px;
+const HeaderCard = styled.section`
+  margin-bottom: 24px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 20px;
+  background: ${props => props.theme.colors.surface};
+  padding: 18px;
+`
 
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const SummaryText = styled.p`
+  margin-bottom: 12px;
+  color: ${props => props.theme.colors.secondaryText};
+  font-size: 15px;
 `
 
 const TagsPage = ({ data }) => {
@@ -29,62 +34,46 @@ const TagsPage = ({ data }) => {
   const posts = data.allMarkdownRemark.nodes
 
   const [selected, setSelected] = useState()
-  const [filteredPosts, setFilteredPosts] = useState([])
 
-  let query = null
-  if (typeof document !== "undefined") {
-    query = document.location.search
-  }
-
-  useEffect(() => {
-    if (!selected) {
-      setFilteredPosts(posts)
-      return
-    }
-
-    setFilteredPosts(
-      filter(posts, post => post.frontmatter.tags.indexOf(selected) !== -1)
-    )
-  }, [selected])
+  const query =
+    typeof document !== "undefined"
+      ? queryString.parse(document.location.search)
+      : {}
 
   useEffect(() => {
-    const q = queryString.parse(query)["q"]
-    setSelected(q)
-  }, [query])
+    setSelected(query.q)
+  }, [query.q])
+
+  const filteredPosts = useMemo(() => {
+    if (!selected) return posts
+
+    return filter(posts, post => post.frontmatter.tags.indexOf(selected) !== -1)
+  }, [posts, selected])
 
   return (
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
 
-      <TagListWrapper>
+      <HeaderCard>
         {selected ? (
-          <Title size="sm">
-            There are {filteredPosts.length} post
-            {filteredPosts.length > 1 && "s"} that match #{selected}.
+          <Title as="h1" size="md">
+            #{selected} 태그 포스트 {filteredPosts.length}개
           </Title>
         ) : (
-          <Title size="sm">
-            There are {tags.length} tag{tags.length > 1 && "s"}.
+          <Title as="h1" size="md">
+            전체 태그 {tags.length}개
           </Title>
         )}
 
-        <TagList
-          count
-          tagList={tags}
-          selected={selected}
-          onClick={tag => {
-            console.log(tag, selected)
-            if (tag === selected) {
-              navigate("/tags")
-              alert("zz")
-            } else setSelected(tag)
-          }}
-        />
-      </TagListWrapper>
+        <SummaryText>
+          태그를 눌러 포스트를 필터링할 수 있습니다. 선택된 태그를 다시 누르면
+          전체 보기로 돌아갑니다.
+        </SummaryText>
 
-      <VerticalSpace size={32} />
+        <TagList count tagList={tags} selected={selected} compact />
+      </HeaderCard>
 
-      <PostList postList={filteredPosts} />
+      <PostList postList={filteredPosts} variant="card" />
     </Layout>
   )
 }

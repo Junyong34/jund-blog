@@ -4,11 +4,9 @@ import { graphql } from "gatsby"
 
 import Layout from "components/Layout"
 import SEO from "components/SEO"
-import Bio from "components/Bio"
 import PostList from "components/PostList"
 import SideTagList from "components/SideTagList"
-import Divider from "components/Divider"
-import { VerticalSpace } from "components/VerticalSpace"
+import HomeHero from "components/HomeHero"
 
 import { title, description, siteUrl } from "../../blog-config"
 
@@ -18,22 +16,20 @@ const BlogIndex = ({ data }) => {
 
   if (posts.length === 0) {
     return (
-      <p>
-        No blog posts found. Add markdown posts to &quot;content/blog&quot; (or
-        the directory you specified for the &quot;gatsby-source-filesystem&quot;
-        plugin in gatsby-config.js).
-      </p>
+      <Layout>
+        <p>아직 작성된 포스트가 없습니다.</p>
+      </Layout>
     )
   }
 
+  const featuredPosts = posts.slice(0, 2)
+  const listPosts = posts.slice(featuredPosts.length)
+
   return (
-    <Layout>
+    <Layout rail={<SideTagList tags={tags} postCount={posts.length} />}>
       <SEO title={title} description={description} url={siteUrl} />
-      <VerticalSpace size={48} />
-      <Bio />
-      <Divider />
-      <SideTagList tags={tags} postCount={posts.length} />
-      <PostList postList={posts} />
+      <HomeHero featuredPosts={featuredPosts} />
+      {listPosts.length > 0 && <PostList postList={listPosts} variant="card" />}
     </Layout>
   )
 }

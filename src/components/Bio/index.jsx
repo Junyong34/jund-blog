@@ -13,13 +13,14 @@ import {
 
 import { siteUrl, description, author, links } from "../../../blog-config"
 
-const BioWrapper = styled.div`
+const BioWrapper = styled.section`
   display: flex;
   align-items: center;
-
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+  gap: 14px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 18px;
+  background: ${props => props.theme.colors.surface};
+  padding: 16px;
 `
 
 const profileImageRoot =
@@ -29,56 +30,58 @@ const profileImageRoot =
 
 const Profile = styled.div`
   flex: 0 0 auto;
-  margin-right: 16px;
-  width: 128px;
-  height: 128px;
+  width: 80px;
+  height: 80px;
   border-radius: 999px;
   background-image: url(${profileImageRoot}/profile.png);
   background-size: cover;
   background-position: center;
 `
 
-const Author = styled.div`
-  margin-bottom: 4.8px;
-  font-size: 24px;
+const Author = styled.p`
+  margin-bottom: 6px;
+  font-size: 20px;
   font-weight: 700;
   color: ${props => props.theme.colors.text};
 `
 
-const Description = styled.div`
-  margin-bottom: 11.2px;
-  line-height: 1.5;
-  font-size: 16px;
+const Description = styled.p`
+  margin-bottom: 10px;
+  line-height: 1.45;
+  font-size: 14px;
   color: ${props => props.theme.colors.secondaryText};
 `
 
 const LinksWrapper = styled.div`
-  & a {
-    margin-right: 9.6px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+`
 
-  & svg {
-    width: 25.6px;
-    height: 25.6px;
-    cursor: pointer;
-  }
+const IconLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: ${props => props.theme.colors.icon};
+  border: 1px solid ${props => props.theme.colors.border};
+  transition: color 0.18s ease, transform 0.18s ease;
 
-  & svg path {
-    fill: ${props => props.theme.colors.icon};
-    transition: fill 0.3s;
-  }
-
-  & a:hover svg path {
-    fill: ${props => props.theme.colors.text};
+  &:hover {
+    color: ${props => props.theme.colors.accent};
+    transform: translateY(-1px);
   }
 `
 
-const Link = ({ link, children }) => {
+const ExternalLink = ({ link, label, children }) => {
   if (!link) return null
+
   return (
-    <a href={link} target="_blank" rel="noreferrer">
+    <IconLink href={link} target="_blank" rel="noreferrer" aria-label={label}>
       {children}
-    </a>
+    </IconLink>
   )
 }
 
@@ -87,32 +90,32 @@ const Bio = () => {
 
   return (
     <BioWrapper id="bio">
-      <Profile />
+      <Profile aria-hidden="true" />
       <div>
         <Author>@{author}</Author>
         <Description>{description}</Description>
         <LinksWrapper>
-          <Link link={github}>
-            <FaGithub />
-          </Link>
-          <Link link={kaggle}>
-            <FaKaggle />
-          </Link>
-          <Link link={instagram}>
-            <FaInstagram />
-          </Link>
-          <Link link={facebook}>
-            <FaFacebook />
-          </Link>
-          <Link link={linkedIn}>
-            <FaLinkedin />
-          </Link>
-          <Link link={email}>
-            <FaEnvelope />
-          </Link>
-          <Link link={etc}>
-            <FaLink />
-          </Link>
+          <ExternalLink link={github} label="GitHub">
+            <FaGithub aria-hidden="true" />
+          </ExternalLink>
+          <ExternalLink link={kaggle} label="Kaggle">
+            <FaKaggle aria-hidden="true" />
+          </ExternalLink>
+          <ExternalLink link={instagram} label="Instagram">
+            <FaInstagram aria-hidden="true" />
+          </ExternalLink>
+          <ExternalLink link={facebook} label="Facebook">
+            <FaFacebook aria-hidden="true" />
+          </ExternalLink>
+          <ExternalLink link={linkedIn} label="LinkedIn">
+            <FaLinkedin aria-hidden="true" />
+          </ExternalLink>
+          <ExternalLink link={email} label="Email">
+            <FaEnvelope aria-hidden="true" />
+          </ExternalLink>
+          <ExternalLink link={etc} label="External Link">
+            <FaLink aria-hidden="true" />
+          </ExternalLink>
         </LinksWrapper>
       </div>
     </BioWrapper>

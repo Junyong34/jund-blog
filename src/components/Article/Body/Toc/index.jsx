@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import styled, { css } from "styled-components"
 
 import { animateScroll } from "react-scroll"
@@ -7,122 +7,144 @@ import useScroll from "hooks/useScroll"
 
 import getElementOffset from "utils/getElmentOffset"
 
-import RevealOnScroll from "components/RevealOnScroll"
+const TOC_TOP_OFFSET = 160
+const TOC_CONTENT_GAP = 20
+const HEADER_HEIGHT = 62
+const SCROLL_OFFSET = HEADER_HEIGHT + 40
+const TOC_BOTTOM_GAP = 28
 
-const STICK_OFFSET = 100
-
-const TocWrapper = styled.div`
+const TocWrapper = styled.nav`
   position: absolute;
   opacity: 1;
-  left: 100%;
+  left: calc(100% + ${TOC_CONTENT_GAP}px);
+  top: 0;
+  width: 240px;
+  height: 100%;
 
-  & > div {
-    padding-right: 20px;
-    padding-left: 16px;
-    margin-left: 48px;
-    position: relative;
-    width: 240px;
-    max-height: calc(100% - 185px);
+  > div {
+    position: sticky;
+    top: ${TOC_TOP_OFFSET}px;
+    width: 100%;
+    max-height: calc(100vh - ${TOC_TOP_OFFSET + TOC_BOTTOM_GAP}px);
+    padding: 8px 8px 8px 14px;
+    border: 1px solid ${props => props.theme.colors.border};
+    border-radius: 14px;
+    background: ${props => props.theme.colors.surface};
     overflow-y: auto;
 
     ::-webkit-scrollbar {
-      width: 3px;
+      width: 6px;
     }
+
     ::-webkit-scrollbar-track {
       background: ${props => props.theme.colors.scrollTrack};
     }
 
     ::-webkit-scrollbar-thumb {
       background: ${props => props.theme.colors.scrollHandle};
+      border-radius: 999px;
     }
-
-    ${props =>
-      props.stick &&
-      css`
-        position: fixed;
-        top: ${STICK_OFFSET}px;
-      `}
   }
 
   @media (max-width: 1300px) {
-    display: None;
+    display: none;
   }
 `
 
-const ParagraphTitle = styled.div`
-  margin-bottom: 8px;
-  padding-left: ${props => (props.subtitle ? 19.2 : 0)}px;
-  font-size: 14.4px;
+const HeadingButton = styled.button`
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.35;
   color: ${props => props.theme.colors.mutedText};
-  line-height: 1.3;
-  transition: all 0.2s;
+  cursor: pointer;
+  transition: transform 0.18s ease, color 0.18s ease,
+    background-color 0.18s ease;
+  margin-bottom: 3px;
+  padding-left: ${props => (props.$subtitle ? "20px" : "8px")};
+
+  &:first-child {
+    margin-top: 8px;
+  }
+
+  &:last-child {
+    margin-bottom: 8px;
+  }
 
   ${props =>
-    props.active &&
+    props.$active &&
     css`
-      transform: translate(-11.2px, 0);
-      color: ${props => props.theme.colors.secondaryText};
+      color: ${props.theme.colors.accent};
+      background: ${props.theme.colors.accentSubtle};
+      transform: translateX(2px);
     `}
 
   &:hover {
     color: ${props => props.theme.colors.text};
-    cursor: pointer;
   }
 `
 
-const Toc = ({ items, articleOffset }) => {
+const Toc = ({ items }) => {
   const { y } = useScroll()
 
-  const [revealAt, setRevealAt] = useState(4000)
-  const [headers, setHeaders] = useState([])
   const [active, setActive] = useState(0)
+  const headingElements = items || []
 
   useEffect(() => {
-    const bioElm = document.getElementById("bio")
+    if (headingElements.length === 0) return
 
-    setRevealAt(
-      getElementOffset(bioElm).top - bioElm.getBoundingClientRect().height - 400
-    )
-  }, [])
+    const currentScrollPosition = y + SCROLL_OFFSET
+    let nextActiveIndex = 0
 
-  useEffect(() => {
-    setHeaders(
-      [
-        ...document.querySelectorAll("#article-body > h2, #article-body > h3"),
-      ].map(element => getElementOffset(element).top)
-    )
-  }, [])
+    for (let i = 0; i < headingElements.length; i += 1) {
+      const top = getElementOffset(headingElements[i]).top
 
-  useEffect(() => {
-    headers.forEach((header, i) => {
-      if (header - 300 < y) {
-        setActive(i)
-        return
+      if (top <= currentScrollPosition) {
+        nextActiveIndex = i
+      } else {
+        break
       }
-    })
-  }, [y])
+    }
+
+    setActive(nextActiveIndex)
+  }, [headingElements, y])
 
   const handleClickTitle = index => {
-    animateScroll.scrollTo(headers[index] - 100)
+    const target = headingElements[index]
+
+    if (!target) return
+
+    const targetTop = getElementOffset(target).top
+
+    animateScroll.scrollTo(targetTop - SCROLL_OFFSET, {
+      duration: 220,
+      smooth: "easeOutQuad",
+    })
+
+    setActive(index)
   }
 
   return (
-    <RevealOnScroll revealAt={revealAt} reverse>
-      <TocWrapper stick={y > articleOffset - STICK_OFFSET}>
-        <div>
-          {items.map((item, i) => (
-            <ParagraphTitle
-              key={i}
-              subtitle={item.tagName === "H3"}
-              active={i === active}
-              onClick={() => handleClickTitle(i)}
-            >
-              {item.innerText}
-            </ParagraphTitle>
-          ))}
-        </div>
-      </TocWrapper>
-    </RevealOnScroll>
+    <TocWrapper aria-label="목차">
+      <div>
+        {items.map((item, i) => (
+          <HeadingButton
+            key={JSON.stringify({ text: item.innerText, i })}
+            $subtitle={item.tagName === "H3"}
+            $active={i === active}
+            type="button"
+            onClick={() => handleClickTitle(i)}
+          >
+            {item.innerText}
+          </HeadingButton>
+        ))}
+      </div>
+    </TocWrapper>
   )
 }
 

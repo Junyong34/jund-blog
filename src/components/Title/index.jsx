@@ -2,32 +2,43 @@ import React from "react"
 import styled from "styled-components"
 
 const Wrapper = styled.h1`
-  margin-bottom: 24px;
-  font-size: ${props => props.size};
-  font-weight: 700;
-  line-height: 1.3;
+  margin-bottom: 20px;
   color: ${props => props.theme.colors.text};
-  word-break: break-all;
+  font-size: ${props => props.$size};
+  font-weight: 700;
+  line-height: 1.25;
+  word-break: keep-all;
 
-  & > a {
-    text-decoration: none;
+  a {
     color: inherit;
-    transition: all 0.2s;
+    text-decoration: none;
+    transition: color 0.18s ease;
   }
 
-  & > a:hover {
-    color: ${props => props.theme.colors.secondaryText};
+  a:hover {
+    color: ${props => props.theme.colors.accent};
   }
 `
 
-const Title = ({ size, children }) => {
-  const sizes = {
-    sm: "19.2px",
-    md: "25.6px",
-    bg: "33.6px",
-  }
+const sizes = {
+  sm: "20px",
+  md: "28px",
+  lg: "36px",
+  xl: "48px",
+  bg: "36px",
+}
 
-  return <Wrapper size={sizes[size]}> {children} </Wrapper>
+const Title = ({ size, children, as }) => {
+  return (
+    <Wrapper as={as} $size={sizes[size] || sizes.md}>
+      {children}
+    </Wrapper>
+  )
+}
+
+Title.defaultProps = {
+  size: "md",
+  as: "h1",
 }
 
 export default Title

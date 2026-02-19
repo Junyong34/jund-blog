@@ -6,20 +6,21 @@ import useScroll from "hooks/useScroll"
 const StyledWrapper = styled.div`
   position: relative;
   opacity: 0;
-  transition: 0.35s all ease;
+  transform: translateY(4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+
   ${props =>
     props.visible &&
     css`
       opacity: 1;
+      transform: translateY(0);
     `}
 `
 
 const RevealOnScroll = ({ revealAt, reverse, children }) => {
   const { y } = useScroll()
 
-  let reveal = null
-  if (!reverse) reveal = y > revealAt
-  else reveal = y < revealAt
+  const reveal = reverse ? y < revealAt : y > revealAt
 
   return <StyledWrapper visible={reveal}>{children}</StyledWrapper>
 }

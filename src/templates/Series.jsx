@@ -6,51 +6,33 @@ import styled from "styled-components"
 import Layout from "components/Layout"
 import SEO from "components/SEO"
 import PostList from "components/PostList"
-import Divider from "components/Divider"
+import Title from "components/Title"
 
 import { description, siteUrl } from "../../blog-config"
 
-const Header = styled.div`
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const HeaderCard = styled.section`
+  margin-bottom: 24px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 20px;
+  background: ${props => props.theme.colors.surface};
+  padding: 18px;
 `
 
-const Title = styled.h1`
-  margin-bottom: 15px;
-  line-height: 1.2;
-  font-size: 44.8px;
-  font-weight: bold;
-  color: ${props => props.theme.colors.text};
-  word-break: break-all;
+const Subtitle = styled.span`
+  display: inline-flex;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: ${props => props.theme.colors.accent};
+  background: ${props => props.theme.colors.accentSubtle};
 `
 
-const Subtitle = styled.h3`
-  display: inline-block;
-  padding: 2px 3px;
-  margin-top: 32px;
-  margin-bottom: 8px;
-  font-size: 20px;
-  font-weight: bold;
-  background-color: ${props => props.theme.colors.text};
-  color: ${props => props.theme.colors.bodyBackground};
-  letter-spacing: -1px;
-`
-
-const SeriesInform = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  color: ${props => props.theme.colors.text};
-
-  & > span {
-    margin: 0 3px;
-  }
-`
-
-const Date = styled.span`
+const SeriesInform = styled.p`
+  margin-top: 6px;
+  font-size: 14px;
   color: ${props => props.theme.colors.tertiaryText};
-  font-weight: lighter;
 `
 
 const Series = ({ pathContext, data }) => {
@@ -65,22 +47,19 @@ const Series = ({ pathContext, data }) => {
         url={siteUrl}
       />
 
-      <Header>
-        <Subtitle> SERIES </Subtitle>
-        <Title> {seriesName} </Title>
+      <HeaderCard>
+        <Subtitle>SERIES</Subtitle>
+        <Title as="h1" size="lg">
+          {seriesName}
+        </Title>
 
         <SeriesInform>
-          <span>{posts.length} Posts</span>
-          <span>·</span>
-          <Date>
-            Last updated on {posts[posts.length - 1].frontmatter.date}
-          </Date>
+          {posts.length} Posts · Last updated on{" "}
+          {posts[posts.length - 1].frontmatter.date}
         </SeriesInform>
+      </HeaderCard>
 
-        <Divider />
-      </Header>
-
-      <PostList postList={posts} />
+      <PostList postList={posts} variant="card" />
     </Layout>
   )
 }

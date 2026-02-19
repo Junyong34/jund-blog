@@ -6,6 +6,7 @@ const Divider = styled.hr`
   margin-bottom: ${props => props.mb};
   border: none;
   border-bottom: 1px solid ${props => props.theme.colors.divider};
+  opacity: 0.8;
 `
 
 Divider.propTypes = {

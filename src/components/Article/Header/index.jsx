@@ -3,50 +3,71 @@ import styled from "styled-components"
 
 import { author } from "../../../../blog-config"
 
-import Divider from "components/Divider"
 import TagList from "components/TagList"
 
-const Wrapper = styled.div`
-  margin-top: 32px;
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const Wrapper = styled.header`
+  margin-bottom: 26px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 22px;
+  background: ${props => props.theme.colors.surface};
+  padding: 22px;
+`
+
+const Label = styled.span`
+  display: inline-flex;
+  margin-bottom: 14px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: ${props => props.theme.colors.accent};
+  background: ${props => props.theme.colors.accentSubtle};
 `
 
 const ArticleTitle = styled.h1`
-  margin-bottom: 25.6px;
+  margin-bottom: 16px;
   line-height: 1.2;
-  font-size: 44.8px;
+  font-size: 42px;
   font-weight: 700;
+
+  @media (max-width: 768px) {
+    font-size: 34px;
+  }
+`
+
+const Information = styled.p`
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: ${props => props.theme.colors.tertiaryText};
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+`
+
+const Strong = styled.span`
   color: ${props => props.theme.colors.text};
-`
-
-const Information = styled.div`
-  margin-bottom: 32px;
-  font-size: 16px;
-`
-
-const Author = styled.span`
   font-weight: 700;
-  color: ${props => props.theme.colors.text};
 `
 
-const Date = styled.span`
-  font-weight: 300;
-  color: ${props => props.theme.colors.secondaryText};
-`
-
-const Header = ({ title, date, tags, minToRead }) => {
+const Header = ({ title, date, update, tags, minToRead }) => {
   return (
     <Wrapper>
-      <ArticleTitle> {title} </ArticleTitle>
+      <Label>ARTICLE</Label>
+      <ArticleTitle>{title}</ArticleTitle>
       <Information>
-        <Author> @{author} </Author>
-        <Date>· {date} </Date>
-        <Date>· {minToRead} min read </Date>
+        <Strong>@{author}</Strong>
+        <span>·</span>
+        <span>{date}</span>
+        <span>·</span>
+        <span>{minToRead} min read</span>
+        {update && (
+          <>
+            <span>·</span>
+            <span>updated {update}</span>
+          </>
+        )}
       </Information>
-      {tags && <TagList tagList={tags} />}
-      <Divider mt="0" />
+      {tags && <TagList tagList={tags} compact />}
     </Wrapper>
   )
 }
