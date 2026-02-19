@@ -1,5 +1,5 @@
 ---
-title: "Codex 실전 사용법: AGENTS.md, Skills, MCP, Rules, config.toml"
+title: "Codex App 사용법: AGENTS.md, Skills, MCP, Rules, config.toml"
 description: "Codex 앱 설치부터 AGENTS.md, Skills, MCP, Rules, config.toml에 대한 정리"
 date: 2026-02-19
 update: 2026-02-19
