@@ -235,7 +235,7 @@ Skill Hub 마켓플레이스 링크
 
 - [Codex Skills](https://developers.openai.com/codex/skills)
 
-## 5) MCP 프로토콜과 추천 MCP 선택법
+## MCP 설치 방법
 
 MCP(Model Context Protocol)는 모델이 외부 도구/데이터 소스와 표준 방식으로 통신하도록 만든 프로토콜입니다. Codex 문서 기준으로는 MCP 서버를 앱 UI 또는`~/.codex/config.toml`에서 연결할 수 있습니다.
 
