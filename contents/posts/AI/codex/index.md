@@ -53,26 +53,27 @@ codex에서 참고하는 docs 입니다.
 4. Settings: codex 앱의 설정을 관리하는 곳입니다. 승인 정책, 샌드박스, MCP 서버, config.toml 등을 설정 및 수정 할 수 있습니다.
 5. prompt: Thread별 프롬프트를 실행 할 수 있습니다.
 
-![img.png](img.png)
+![Codex Main](img.png)
 
 ### WorkTree 생성
 
 Thread에 대한 worktree을 생성하여 스레드 별로 멀티 에이전트를 실행 시킬 수있습니다.
 
-![img_1.png](img_1.png)
+![thread workTree Create](img_1.png)
 
 ### MCP Servers 설정
 
 Codex에서 외부 시스템과 통신하기 위한 MCP 서버를 설정할 수 있습니다.
 
-![img_2.png](img_2.png)
+![setting MCP](img_2.png)
 
 ## AGENTS.md 이해하기
 
 [AGENTS.md](https://agents.md/)는 "저장소에서 에이전트가 어떻게 행동해야 하는지"를 정의하는 문서입니다.
 
 🧩 AGENTS.md란?
-AGENTS.md는 소프트웨어 프로젝트 루트에 놓는 Markdown 파일 형식의 오픈 표준으로, AI 기반 코딩 에이전트에게 프로젝트의 맥락(Context) 과 동작 지침 을 명시적으로 전달하는 데 쓰입니다.
+
+소프트웨어 프로젝트 루트에 놓는 Markdown 파일 형식의 오픈 표준으로, AI 기반 코딩 에이전트에게 프로젝트의 맥락(Context) 과 동작 지침 을 명시적으로 전달하는 데 쓰입니다.
 사람이 읽는 README.md와 달리, AI 코딩 도구들이 프로젝트를 이해하고 정확하게 작업하도록 돕는 목적입니다
 
 공식 가이드 기준으로 Codex는 AGENTS 문서를 계층적으로 읽습니다.
