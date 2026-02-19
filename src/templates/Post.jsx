@@ -4,16 +4,35 @@ import { graphql } from "gatsby"
 
 import Layout from "components/Layout"
 import Article from "components/Article"
+import FloatingShareButton from "components/Share/FloatingShareButton"
 
 import { siteUrl } from "../../blog-config"
+
+const getAbsolutePostUrl = slug => {
+  const trimmedSiteUrl = siteUrl.replace(/\/+$/, "")
+  const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`
+
+  return `${trimmedSiteUrl}${normalizedSlug}`
+}
 
 const Post = ({ data }) => {
   const post = data.markdownRemark
   const { previous, next, seriesList } = data
 
-  const { title, date, update, tags, series } = post.frontmatter
+  const {
+    title,
+    description,
+    date,
+    update,
+    tags,
+    series,
+    ogImage,
+  } = post.frontmatter
   const { excerpt } = post
   const { readingTime, slug } = post.fields
+  const postUrl = getAbsolutePostUrl(slug)
+  const seoDescription = description || excerpt
+  const seoImage = ogImage?.publicURL
 
   let filteredSeries = []
   if (series !== null) {
@@ -34,7 +53,18 @@ const Post = ({ data }) => {
 
   return (
     <Layout>
-      <SEO title={title} description={excerpt} url={`${siteUrl}${slug}`} />
+      <SEO
+        title={title}
+        description={seoDescription}
+        url={postUrl}
+        image={seoImage}
+        type="article"
+      />
+      <FloatingShareButton
+        title={title}
+        description={seoDescription}
+        url={postUrl}
+      />
       <Article>
         <Article.Header
           title={title}
@@ -73,10 +103,14 @@ export const pageQuery = graphql`
       html
       frontmatter {
         title
+        description
         date(formatString: "MMMM DD, YYYY")
         update(formatString: "MMMM DD, YYYY")
         tags
         series
+        ogImage {
+          publicURL
+        }
       }
       fields {
         slug

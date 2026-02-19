@@ -10,6 +10,7 @@ tags:
   - skills
   - mcp
 series: "기술블로그"
+ogImage: "./og-image.webp"
 ---
 
 > 현재 회사에서 보안관련 정책으로 Open AI, JetBrains AI 2가지 허용 하고 있어 Codex APP 사용이 가능하여, Codex APP 설치부터 (AGENTS.md, Skills, MCP, Rules, config.toml) 설정 및 설명에 대한 글입니다.

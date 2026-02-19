@@ -109,6 +109,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     description: String
     tags: [String!]!
     series: String
+    ogImage: File @fileByRelativePath
   }
   `
   createTypes(typeDefs)
