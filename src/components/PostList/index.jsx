@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import styled, { css } from "styled-components"
 import _ from "lodash"
 
-import { Link } from "gatsby"
+import { Link, navigate } from "gatsby"
 
 import TagList from "components/TagList"
 
@@ -25,16 +25,52 @@ const Grid = styled.div`
 `
 
 const Card = styled.article`
+  position: relative;
   height: 100%;
+  overflow: hidden;
+  cursor: pointer;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: 18px;
   background: ${props => props.theme.colors.surface};
   padding: 20px;
   transition: transform 0.18s ease, border-color 0.18s ease;
 
-  &:hover {
-    transform: translateY(-2px);
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: ${props => props.theme.colors.accent};
+    opacity: 0;
+    transform: scaleX(0.75);
+    transform-origin: left center;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+  }
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
     border-color: ${props => props.theme.colors.activatedBorder};
+
+    &::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &::after {
+      transition: none;
+    }
+
+    &:hover,
+    &:focus-within {
+      transform: none;
+    }
   }
 `
 
@@ -56,7 +92,7 @@ const Meta = styled.p`
   color: ${props => props.theme.colors.tertiaryText};
 `
 
-const Excerpt = styled.p`
+const DescriptionText = styled.p`
   margin-bottom: 16px;
   line-height: 1.65;
   font-size: 15px;
@@ -70,6 +106,15 @@ const checkIsScrollAtBottom = () => {
       document.documentElement.scrollTop <=
     document.documentElement.clientHeight + 120
   )
+}
+
+const isInteractiveTarget = event => {
+  if (event.defaultPrevented) return true
+  const target = event.target
+
+  if (!target || typeof target.closest !== "function") return false
+
+  return Boolean(target.closest("a, button, input, textarea, select, label"))
 }
 
 const PostList = ({ postList, variant }) => {
@@ -103,17 +148,32 @@ const PostList = ({ postList, variant }) => {
     <Wrapper>
       <Grid $variant={variant}>
         {postList.slice(0, postCount).map((post, i) => {
-          const { title, date, tags } = post.frontmatter
-          const { excerpt } = post
+          const { title, date, tags, description } = post.frontmatter
           const { slug } = post.fields
+          const summary = description || "설명은 준비 중입니다."
 
           return (
-            <Card key={JSON.stringify({ slug, i })}>
+            <Card
+              key={JSON.stringify({ slug, i })}
+              role="link"
+              tabIndex={0}
+              aria-label={`${title} 포스트로 이동`}
+              onClick={event => {
+                if (isInteractiveTarget(event)) return
+                navigate(slug)
+              }}
+              onKeyDown={event => {
+                if (event.key !== "Enter" && event.key !== " ") return
+                if (isInteractiveTarget(event)) return
+                event.preventDefault()
+                navigate(slug)
+              }}
+            >
               <CardTitle>
                 <Link to={slug}>{title}</Link>
               </CardTitle>
               <Meta>{date}</Meta>
-              <Excerpt>{excerpt}</Excerpt>
+              <DescriptionText>{summary}</DescriptionText>
               <TagList tagList={tags} compact />
             </Card>
           )

@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Link } from "gatsby"
+import { Link, navigate } from "gatsby"
 
 import TagList from "components/TagList"
 
@@ -92,15 +92,51 @@ const FeaturedList = styled.div`
 `
 
 const FeaturedCard = styled.article`
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: 14px;
   background: ${props => props.theme.colors.surfaceMuted};
   padding: 14px;
   transition: transform 0.18s ease, border-color 0.18s ease;
 
-  &:hover {
-    transform: translateY(-2px);
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: ${props => props.theme.colors.accent};
+    opacity: 0;
+    transform: scaleX(0.75);
+    transform-origin: left center;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+  }
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
     border-color: ${props => props.theme.colors.activatedBorder};
+
+    &::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &::after {
+      transition: none;
+    }
+
+    &:hover,
+    &:focus-within {
+      transform: none;
+    }
   }
 `
 
@@ -121,11 +157,20 @@ const FeaturedMeta = styled.p`
   color: ${props => props.theme.colors.tertiaryText};
 `
 
-const FeaturedExcerpt = styled.p`
+const FeaturedDescription = styled.p`
   margin-bottom: 10px;
   color: ${props => props.theme.colors.secondaryText};
   font-size: 14px;
 `
+
+const isInteractiveTarget = event => {
+  if (event.defaultPrevented) return true
+  const target = event.target
+
+  if (!target || typeof target.closest !== "function") return false
+
+  return Boolean(target.closest("a, button, input, textarea, select, label"))
+}
 
 const HomeHero = ({ featuredPosts }) => {
   return (
@@ -136,7 +181,8 @@ const HomeHero = ({ featuredPosts }) => {
           <IntroBadge>기술 블로그</IntroBadge>
           <IntroTitle>{description}</IntroTitle>
           <IntroText>
-            프론트엔드 구현, 아키텍처, 팀 생산성을 높이는 개발 경험을 기록합니다.
+            프론트엔드 구현, 아키텍처, 팀 생산성을 높이는 개발 경험을
+            기록합니다.
           </IntroText>
           <IntroMeta>Written by @{author}</IntroMeta>
         </IntroContent>
@@ -144,16 +190,37 @@ const HomeHero = ({ featuredPosts }) => {
 
       <FeaturedList>
         {featuredPosts.map(post => {
-          const { title, date, tags } = post.frontmatter
+          const {
+            title,
+            date,
+            tags,
+            description: postDescription,
+          } = post.frontmatter
           const { slug } = post.fields
+          const summary = postDescription || "설명은 준비 중입니다."
 
           return (
-            <FeaturedCard key={slug}>
+            <FeaturedCard
+              key={slug}
+              role="link"
+              tabIndex={0}
+              aria-label={`${title} 포스트로 이동`}
+              onClick={event => {
+                if (isInteractiveTarget(event)) return
+                navigate(slug)
+              }}
+              onKeyDown={event => {
+                if (event.key !== "Enter" && event.key !== " ") return
+                if (isInteractiveTarget(event)) return
+                event.preventDefault()
+                navigate(slug)
+              }}
+            >
               <FeaturedTitle>
                 <Link to={slug}>{title}</Link>
               </FeaturedTitle>
               <FeaturedMeta>{date}</FeaturedMeta>
-              <FeaturedExcerpt>{post.excerpt}</FeaturedExcerpt>
+              <FeaturedDescription>{summary}</FeaturedDescription>
               <TagList tagList={tags} compact />
             </FeaturedCard>
           )
