@@ -1,8 +1,8 @@
 ---
 title: "AI를 만능 파트너로 만드는 4단계: 생산성 극대화 전략"
-description: "AI 코딩 도구를 단순 사용에서 시스템 기반 협업으로 전환해 생산성을 높인 실전 방법"
-date: 2026-02-22
-update: 2026-02-22
+description: "AI 코딩 도구를 단순 사용에서 AI 운영 시스템 기반 협업으로 전환해 생산성을 높인 방법"
+date: 2026-02-23
+update: 2026-02-23
 tags:
   - ai
   - productivity
