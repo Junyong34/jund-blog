@@ -9,7 +9,7 @@ tags:
   - agents
   - skills
   - mcp
-series: "기술블로그"
+series: "AI 활용법"
 ogImage: "./og-image.webp"
 ---
 

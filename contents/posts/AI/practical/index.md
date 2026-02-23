@@ -8,7 +8,7 @@ tags:
   - productivity
   - workflow
   - engineering
-series: "기술블로그"
+series: "AI 활용법"
 ---
 
 AI가 모든 것을 알아서 해결해 줄 것 같지만, 실무에서는 기대와 다른 결과가 자주 나옵니다. 실제 프로젝트에서 AI를 활용하여 코딩을 하면서
