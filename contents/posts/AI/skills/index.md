@@ -10,7 +10,7 @@ tags:
   - skill-v2
   - codex
 series: "AI 활용법"
-ogImage: "./og-image.png"
+ogImage: "./og-image.webp"
 ---
 
 프롬프트를 길게 잘 적는 것만으로는 AI가 안정적으로 같은 품질을 반복하지 못하는 경우가 많습니다. 대화가 길어질수록 맥락이 흔들리고, 프로젝트 규칙을 매번 다시 설명해야 하며, 한 번 잘 되던 답변이 다음 작업에서는 재현되지 않기도 합니다.
@@ -65,7 +65,6 @@ my-skill/
 - [Claude Code skills docs](https://code.claude.com/docs/en/skills): Claude Code에서 Skill을 어디에 두고 어떻게 확장하는지 설명하는 문서입니다.
 - [anthropics/skills](https://github.com/anthropics/skills): Anthropic이 공개한 예시 Skill 저장소로, 실제 구조를 확인하기 좋습니다.
 - [Equipping agents for the real world with Agent Skills](https://claude.com/blog/equipping-agents-for-the-real-world-with-agent-skills): progressive disclosure와 Skill anatomy를 이해하기 좋은 엔지니어링 글입니다.
-
 
 ## 왜 프로젝트 전용 프론트엔드 Skill을 만들었을까
 
@@ -155,7 +154,7 @@ description: |
 
 1. 프론트엔드 작업에서 반복적으로 설명하던 판단 기준을 먼저 글로 정리했습니다.
 2. `skill-creator`를 사용해 Skill을 생성했습니다. `skill-creator`는 입력한 가이드라인을 바탕으로 `SKILL.md + references + evals` 구조를 자동으로 구성하고, evals 검증까지 수행해 줍니다.
-3. 생성된 Skill의 `description`과 평가 시나리오를 프로젝트 특성에 맞게 보완하고, `skill-creator`가  `description`  최적화 작업도 진행해줬습니다.
+3. 생성된 Skill의 `description`과 평가 시나리오를 프로젝트 특성에 맞게 보완하고, `skill-creator`가 `description` 최적화 작업도 진행해줬습니다.
 4. 실제로 자주 나오는 질문을 기준으로 `expected_output`을 구체화했습니다.
 
 여기서 중요한 점은 "좋은 문장을 쓰는 것"보다 "재현 가능한 판단 기준을 만드는 것"이었습니다. 같은 질문이 들어왔을 때 비슷한 원칙으로 답해야 Skill의 가치가 생깁니다.
@@ -171,9 +170,6 @@ description: |
 셋째, 리뷰 기준이 일관되어졌습니다. 단순히 "코드를 예쁘게"가 아니라, 왜 이 패턴을 피해야 하는지와 어떤 최소 수정이 적절한지를 문서로 고정할 수 있었습니다.
 
 넷째, 레거시 프론트엔드에서 자주 흔들리던 의사결정 기준이 명확해졌습니다. 이상적인 구조를 무조건 강요하는 대신, "현재 요청과 직접 연결된 최소 변경"이라는 기본값을 고정한 점이 특히 실용적이었습니다.
-
-
-
 
 ## 마무리
 
