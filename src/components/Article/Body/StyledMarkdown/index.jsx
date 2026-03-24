@@ -16,6 +16,7 @@ const StyledMarkdown = styled.div`
   & table,
   & blockquote,
   & pre,
+  & .mermaid,
   & img,
   & .katex-display {
     margin-top: 0;
@@ -193,6 +194,19 @@ const StyledMarkdown = styled.div`
 
   & pre > code {
     font-size: 14px;
+  }
+
+  & .mermaid {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0;
+  }
+
+  & .mermaid svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
   }
 
   & img {

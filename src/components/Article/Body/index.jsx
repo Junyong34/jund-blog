@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 
 import Toc from "./Toc"
 import StyledMarkdown from "./StyledMarkdown"
+import { renderMermaidDiagrams } from "./mermaid"
 
 const Wrapper = styled.div`
   position: relative;
@@ -19,14 +20,26 @@ const Wrapper = styled.div`
 `
 
 const Body = ({ html }) => {
+  const bodyRef = useRef(null)
   const [toc, setToc] = useState([])
 
   useEffect(() => {
+    const bodyElement = bodyRef.current
+
+    if (!bodyElement) {
+      setToc([])
+      return undefined
+    }
+
     setToc(
-      Array.from(
-        document.querySelectorAll("#article-body > h2, #article-body > h3")
+      Array.from(bodyElement.children).filter(
+        element => element.tagName === "H2" || element.tagName === "H3"
       )
     )
+
+    renderMermaidDiagrams(bodyElement).catch(() => undefined)
+
+    return undefined
   }, [html])
 
   return (
@@ -34,6 +47,7 @@ const Body = ({ html }) => {
       <Toc items={toc} />
 
       <StyledMarkdown
+        ref={bodyRef}
         id="article-body"
         dangerouslySetInnerHTML={{ __html: html }}
         itemProp="articleBody"
